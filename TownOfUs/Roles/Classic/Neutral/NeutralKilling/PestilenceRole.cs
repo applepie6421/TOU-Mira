@@ -42,17 +42,13 @@ public sealed class PestilenceRole(IntPtr cppPtr)
     public string LocaleKey => "Pestilence";
     public string RoleName => TouLocale.Get($"TouRole{LocaleKey}");
     public string RoleDescription => TouLocale.GetParsed($"TouRole{LocaleKey}IntroBlurb");
-    public string RoleLongDescription => OptionGroupSingleton<PlaguebearerOptions>.Instance.LegacyPestilence
-        ? TouLocale.GetParsed($"TouRole{LocaleKey}TabDescriptionLegacy")
-        : TouLocale.GetParsed($"TouRole{LocaleKey}TabDescription");
+    public string RoleLongDescription => TouLocale.GetParsed($"TouRole{LocaleKey}TabDescription{PlaguebearerRole.ReworkString}");
 
     public string GetAdvancedDescription()
     {
         return
             TouLocale.GetParsed($"TouRole{LocaleKey}WikiDescription") +
-            TouLocale.GetParsed(OptionGroupSingleton<PlaguebearerOptions>.Instance.LegacyPestilence
-                ? $"TouRole{LocaleKey}WikiAdditionLegacy"
-                : $"TouRole{LocaleKey}WikiAddition") +
+            TouLocale.GetParsed($"TouRole{LocaleKey}WikiAddition{PlaguebearerRole.ReworkString}") +
             MiscUtils.AppendOptionsText(GetType());
     }
 
@@ -124,7 +120,7 @@ public sealed class PestilenceRole(IntPtr cppPtr)
         {
             player.ChangeRole(RoleId.Get<PestilenceRole>());
 
-            if (player.AmOwner && !OptionGroupSingleton<PlaguebearerOptions>.Instance.LegacyPestilence)
+            if (player.AmOwner && OptionGroupSingleton<PlaguebearerOptions>.Instance.UsePestilenceStacks)
             {
                 Coroutines.Start(MiscUtils.CoFlash(TownOfUsColors.Pestilence));
             }
@@ -162,7 +158,7 @@ public sealed class PestilenceRole(IntPtr cppPtr)
             return false;
         }
 
-        if (OptionGroupSingleton<PlaguebearerOptions>.Instance.LegacyPestilence)
+        if (invic is not PestilenceUnstoppableModifier)
         {
             if (interactor.AmOwner)
             {
@@ -188,7 +184,16 @@ public sealed class PestilenceRole(IntPtr cppPtr)
     public override void Initialize(PlayerControl player)
     {
         RoleBehaviourStubs.Initialize(this, player);
-        if (!Player.HasModifier<InvulnerabilityModifier>())
+        var plagueOpts = OptionGroupSingleton<PlaguebearerOptions>.Instance;
+
+        if (plagueOpts.UsePestilenceStacks)
+        {
+            if (!Player.HasModifier<PestilenceUnstoppableModifier>())
+            {
+                Player.AddModifier<PestilenceUnstoppableModifier>();
+            }
+        }
+        else if (!Player.HasModifier<InvulnerabilityModifier>())
         {
             Player.AddModifier<InvulnerabilityModifier>(true, true, false);
         }
@@ -199,20 +204,18 @@ public sealed class PestilenceRole(IntPtr cppPtr)
             HudManager.Instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(TownOfUsColors.Pestilence);
         }
 
-        var plagueOpts = OptionGroupSingleton<PlaguebearerOptions>.Instance;
         Announced = plagueOpts.LegacyPestilence && !plagueOpts.AnnouncePest.Value;
-
-        if (!plagueOpts.LegacyPestilence && !Player.HasModifier<UnstoppableModifier>())
-        {
-            Player.AddModifier<UnstoppableModifier>();
-        }
     }
 
     public override void Deinitialize(PlayerControl targetPlayer)
     {
         RoleBehaviourStubs.Deinitialize(this, targetPlayer);
         TouRoleUtils.ClearTaskHeader(Player);
-        if (Player.HasModifier<InvulnerabilityModifier>())
+        if (Player.HasModifier<PestilenceUnstoppableModifier>())
+        {
+            Player.RemoveModifier<PestilenceUnstoppableModifier>();
+        }
+        else if (Player.HasModifier<InvulnerabilityModifier>())
         {
             Player.RemoveModifier<InvulnerabilityModifier>();
         }

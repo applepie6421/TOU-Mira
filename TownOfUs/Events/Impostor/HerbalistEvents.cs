@@ -5,6 +5,7 @@ using MiraAPI.GameOptions;
 using MiraAPI.Hud;
 using MiraAPI.Modifiers;
 using TownOfUs.Modifiers;
+using TownOfUs.Modifiers.Neutral;
 using TownOfUs.Modifiers.Impostor.Herbalist;
 using TownOfUs.Options;
 using TownOfUs.Roles.Impostor;
@@ -65,7 +66,7 @@ public static class HerbalistEvents
         if (!target.TryGetModifier<HerbalistProtectionModifier>(out var protectMod) ||
             protectMod.Herbalist.PlayerId == source.PlayerId ||
             target.PlayerId == source.PlayerId ||
-            (source.TryGetModifier<IndirectAttackerModifier>(out var indirect) && indirect.IgnoreShield) || source.HasModifier<UnstoppableModifier>())
+            (source.TryGetModifier<IndirectAttackerModifier>(out var indirect) && indirect.IgnoreShield) || source.HasModifier<PestilenceUnstoppableModifier>())
         {
             return false;
         }

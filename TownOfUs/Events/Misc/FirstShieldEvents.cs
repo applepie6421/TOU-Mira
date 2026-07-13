@@ -8,6 +8,7 @@ using MiraAPI.Modifiers;
 using Reactor.Utilities;
 using TownOfUs.Buttons;
 using TownOfUs.Modifiers;
+using TownOfUs.Modifiers.Neutral;
 using TownOfUs.Options;
 
 namespace TownOfUs.Events.Misc;
@@ -54,7 +55,7 @@ public static class FirstShieldEvents
         }
 
         if (!target.HasModifier<FirstDeadShield>() || source == target ||
-            (source.TryGetModifier<IndirectAttackerModifier>(out var indirect) && indirect.IgnoreShield) || source.HasModifier<UnstoppableModifier>())
+            (source.TryGetModifier<IndirectAttackerModifier>(out var indirect) && indirect.IgnoreShield) || source.HasModifier<PestilenceUnstoppableModifier>())
         {
             return;
         }

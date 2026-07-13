@@ -167,7 +167,7 @@ public sealed class TransporterRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITown
             transporter.AddModifier<PlaguebearerInfectedModifier>(infectedplayer2.PlagueBearerId);
         }
 
-        if (transporter.AmOwner && !OptionGroupSingleton<PlaguebearerOptions>.Instance.LegacyPestilence)
+        if (transporter.AmOwner && OptionGroupSingleton<PlaguebearerOptions>.Instance.UsePestilenceStacks)
         {
             if (play1.Data.Role is PlaguebearerRole && !PlaguebearerRole.InteractionWillTransform(play1, transporter))
             {

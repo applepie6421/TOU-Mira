@@ -6,6 +6,7 @@ using MiraAPI.Hud;
 using MiraAPI.Modifiers;
 using MiraAPI.Roles;
 using TownOfUs.Modifiers;
+using TownOfUs.Modifiers.Neutral;
 using TownOfUs.Modifiers.Crewmate;
 using TownOfUs.Modules;
 using TownOfUs.Options;
@@ -94,7 +95,7 @@ public static class WardenEvents
         }
 
         if (!target.HasModifier<WardenFortifiedModifier>() || source == target ||
-            (source.TryGetModifier<IndirectAttackerModifier>(out var indirect) && indirect.IgnoreShield) || source.HasModifier<UnstoppableModifier>())
+            (source.TryGetModifier<IndirectAttackerModifier>(out var indirect) && indirect.IgnoreShield) || source.HasModifier<PestilenceUnstoppableModifier>())
         {
             return;
         }

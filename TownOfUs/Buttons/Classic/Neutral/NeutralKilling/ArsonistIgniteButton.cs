@@ -66,30 +66,17 @@ public sealed class ArsonistIgniteButton : TownOfUsRoleButton<ArsonistRole>, ILe
 
     protected override void OnClick()
     {
-        var legacy = OptionGroupSingleton<ArsonistOptions>.Instance.LegacyArsonist;
-
-        var dousedPlayers = legacy
+        var dousedPlayers = OptionGroupSingleton<ArsonistOptions>.Instance.LegacyArsonist
             ? ModifierUtils.GetPlayersWithModifier<ArsonistDousedModifier>().ToList()
             : PlayersInRange.Where(x => x.HasModifier<ArsonistDousedModifier>()).ToList();
 
-        var retaliatingPest = legacy
-            ? (ClosestTarget != null && ClosestTarget.Data.Role is PestilenceRole ? ClosestTarget : null)
-            : dousedPlayers.FirstOrDefault(x => x.Data.Role is PestilenceRole);
-
-        var victims = dousedPlayers.Where(x => x.Data.Role is not PestilenceRole).ToList();
-
-        if (victims.Count > 0)
+        if (dousedPlayers.Count > 0)
         {
-            PlayerControl.LocalPlayer.RpcSpecialMultiMurder(victims, MeetingCheck.OutsideMeeting, true,
+            PlayerControl.LocalPlayer.RpcSpecialMultiMurder(dousedPlayers, MeetingCheck.OutsideMeeting, true,
                 teleportMurderer: false,
                 playKillSound: false,
                 causeOfDeath: "Arsonist");
-        }
 
-        retaliatingPest?.RpcCustomMurder(PlayerControl.LocalPlayer, MeetingCheck.OutsideMeeting);
-
-        if (victims.Count > 0 || retaliatingPest != null)
-        {
             TouAudio.PlaySound(TouAudio.ArsoIgniteSound);
 
             CustomButtonSingleton<ArsonistDouseButton>.Instance.ResetCooldownAndOrEffect();

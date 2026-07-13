@@ -9,6 +9,7 @@ using MiraAPI.Networking;
 using TownOfUs.Buttons;
 using TownOfUs.Buttons.Crewmate;
 using TownOfUs.Modifiers;
+using TownOfUs.Modifiers.Neutral;
 using TownOfUs.Modifiers.Crewmate;
 using TownOfUs.Modifiers.Game;
 using TownOfUs.Modules;
@@ -115,7 +116,7 @@ public static class VeteranEvents
                 }
             }
             if (!OptionGroupSingleton<VeteranOptions>.Instance.KilledOnAlert &&
-                (indirectMod == null || !indirectMod.IgnoreShield) && !source.HasModifier<UnstoppableModifier>())
+                (indirectMod == null || !indirectMod.IgnoreShield) && !source.HasModifier<PestilenceUnstoppableModifier>())
             {
                 miraEvent.Cancel();
             }

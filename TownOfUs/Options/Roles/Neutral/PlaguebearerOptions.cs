@@ -19,6 +19,8 @@ public sealed class PlaguebearerOptions : AbstractOptionGroup<PlaguebearerRole>
     [ModdedToggleOption("TouOptionPlaguebearerLegacyMode")]
     public bool LegacyPestilence { get; set; } = false;
 
+    public bool UsePestilenceStacks => !LegacyPestilence;
+
     public ModdedToggleOption AnnouncePest { get; set; } = new("TouOptionPlaguebearerAnnounceTransformation", true)
     {
         Visible = () => OptionGroupSingleton<PlaguebearerOptions>.Instance.LegacyPestilence

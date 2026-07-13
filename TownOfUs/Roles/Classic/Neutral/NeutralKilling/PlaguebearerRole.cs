@@ -57,6 +57,7 @@ public sealed class PlaguebearerRole(IntPtr cppPtr)
     public DoomableType DoomHintType => DoomableType.Fearmonger;
     public string LocaleKey => "Plaguebearer";
     public string RoleName => TouLocale.Get($"TouRole{LocaleKey}");
+    public static string ReworkString => OptionGroupSingleton<PlaguebearerOptions>.Instance.UsePestilenceStacks ? string.Empty : "Legacy";
     public string RoleDescription => TouLocale.GetParsed($"TouRole{LocaleKey}IntroBlurb");
     public string RoleLongDescription => TouLocale.GetParsed($"TouRole{LocaleKey}TabDescription");
 
@@ -64,9 +65,7 @@ public sealed class PlaguebearerRole(IntPtr cppPtr)
     {
         return
             TouLocale.GetParsed($"TouRole{LocaleKey}WikiDescription") +
-            TouLocale.GetParsed(OptionGroupSingleton<PlaguebearerOptions>.Instance.LegacyPestilence
-                ? $"TouRole{LocaleKey}WikiAdditionLegacy"
-                : $"TouRole{LocaleKey}WikiAddition") +
+            TouLocale.GetParsed($"TouRole{LocaleKey}WikiAddition{ReworkString}") +
             MiscUtils.AppendOptionsText(GetType());
     }
 
@@ -236,7 +235,7 @@ public sealed class PlaguebearerRole(IntPtr cppPtr)
         CheckInfected(interactor, target);
 
         if (target.Data.Role is PlaguebearerRole && interactor.AmOwner &&
-            !OptionGroupSingleton<PlaguebearerOptions>.Instance.LegacyPestilence &&
+            OptionGroupSingleton<PlaguebearerOptions>.Instance.UsePestilenceStacks &&
             !InteractionWillTransform(target, interactor))
         {
             PestilenceRole.RpcHorsemanSensed(target);

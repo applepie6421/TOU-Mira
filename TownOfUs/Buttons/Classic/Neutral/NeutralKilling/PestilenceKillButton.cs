@@ -54,9 +54,7 @@ public sealed class PestilenceKillButton : TownOfUsKillRoleButton<PestilenceRole
 
     public override void ClickHandler()
     {
-        var chainKill = CanClick() && Target != null &&
-                        !OptionGroupSingleton<PlaguebearerOptions>.Instance.LegacyPestilence &&
-                        Target.HasModifier<TerminalPestilenceModifier>();
+        var chainKill = CanClick() && Target != null && Target.HasModifier<TerminalPestilenceModifier>();
 
         base.ClickHandler();
 

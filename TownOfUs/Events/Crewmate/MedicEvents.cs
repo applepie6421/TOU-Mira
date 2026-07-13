@@ -10,6 +10,7 @@ using MiraAPI.Roles;
 using TownOfUs.Buttons;
 using TownOfUs.Buttons.Crewmate;
 using TownOfUs.Modifiers;
+using TownOfUs.Modifiers.Neutral;
 using TownOfUs.Modifiers.Crewmate;
 using TownOfUs.Modules;
 using TownOfUs.Options;
@@ -165,7 +166,7 @@ public static class MedicEvents
 
         if (!target.HasModifier<MedicShieldModifier>() ||
             target.PlayerId == source.PlayerId ||
-            (source.TryGetModifier<IndirectAttackerModifier>(out var indirect) && indirect.IgnoreShield) || source.HasModifier<UnstoppableModifier>())
+            (source.TryGetModifier<IndirectAttackerModifier>(out var indirect) && indirect.IgnoreShield) || source.HasModifier<PestilenceUnstoppableModifier>())
         {
             return false;
         }

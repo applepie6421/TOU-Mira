@@ -54,7 +54,7 @@ public static class PlaguebearerEvents
         PlaguebearerRole.RpcCheckInfected(source, target);
 
         if (target.Data.Role is PlaguebearerRole &&
-            !OptionGroupSingleton<PlaguebearerOptions>.Instance.LegacyPestilence &&
+            OptionGroupSingleton<PlaguebearerOptions>.Instance.UsePestilenceStacks &&
             !PlaguebearerRole.InteractionWillTransform(target, source))
         {
             PestilenceRole.RpcHorsemanSensed(target);
