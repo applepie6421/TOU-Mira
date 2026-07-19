@@ -1537,6 +1537,7 @@
   <string name="TouOptionWardenFortEnumWarden">Warden</string>
   <string name="TouOptionWardenFortEnumSelfAndWarden">Fortified + Warden</string>
   <string name="TouOptionWardenFortEnumEveryone">Everyone</string>
+  <string name="TouOptionWardenFortifyInARow">Fortify Same Person Twice In A Row</string>
   <!-- Impostor Roles -->
   <!-- Ambassador Wiki / Abilities -->
   <string name="TouRoleAmbassador">Ambassador</string>

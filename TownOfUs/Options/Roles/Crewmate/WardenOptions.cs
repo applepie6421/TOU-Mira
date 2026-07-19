@@ -11,6 +11,9 @@ public sealed class WardenOptions : AbstractRoleOptionGroup<WardenRole>
     [ModdedEnumOption("TouOptionWardenShowFortifyPlayer", typeof(FortifyOptions),
         ["TouOptionWardenFortEnumSelf", "TouOptionWardenFortEnumWarden", "TouOptionWardenFortEnumSelfAndWarden", "TouOptionWardenFortEnumEveryone"])]
     public FortifyOptions ShowFortified { get; set; } = FortifyOptions.SelfAndWarden;
+
+    [ModdedToggleOption("TouOptionWardenFortifyInARow")]
+    public bool FortifyInARow { get; set; } = true;
 }
 
 public enum FortifyOptions

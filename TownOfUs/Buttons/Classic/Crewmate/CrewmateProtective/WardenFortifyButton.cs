@@ -1,4 +1,6 @@
-﻿using TownOfUs.Roles.Crewmate;
+﻿using MiraAPI.GameOptions;
+using TownOfUs.Options.Roles.Crewmate;
+using TownOfUs.Roles.Crewmate;
 using UnityEngine;
 
 namespace TownOfUs.Buttons.Crewmate;
@@ -18,7 +20,9 @@ public sealed class WardenFortifyButton : TownOfUsRoleButton<WardenRole, PlayerC
 
     public override PlayerControl? GetTarget()
     {
-        return PlayerControl.LocalPlayer.GetClosestLivingPlayer(true, Distance);
+        return PlayerControl.LocalPlayer.GetClosestLivingPlayer(true, Distance,
+            predicate: player => OptionGroupSingleton<WardenOptions>.Instance.FortifyInARow
+                || player != Role.LastFortified);
     }
 
     protected override void OnClick()

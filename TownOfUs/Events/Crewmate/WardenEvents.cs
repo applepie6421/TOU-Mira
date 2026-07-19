@@ -1,6 +1,7 @@
 ﻿using MiraAPI.Events;
 using MiraAPI.Events.Mira;
 using MiraAPI.Events.Vanilla.Gameplay;
+using MiraAPI.Events.Vanilla.Meeting;
 using MiraAPI.GameOptions;
 using MiraAPI.Hud;
 using MiraAPI.Modifiers;
@@ -44,6 +45,21 @@ public static class WardenEvents
 
             mod.ShowFort = showShieldedEveryone || showShieldedSelf || showShieldedWarden ||
                            (PlayerControl.LocalPlayer.HasDied() && genOpt.TheDeadKnow && !body && !fakePlayer?.body);
+        }
+    }
+
+    [RegisterEvent]
+    public static void EjectionEventHandler(EjectionEvent _)
+    {
+        if (OptionGroupSingleton<WardenOptions>.Instance.FortifyInARow)
+        {
+            return;
+        }
+
+        foreach (var warden in CustomRoleUtils.GetActiveRolesOfType<WardenRole>().ToList())
+        {
+            warden.LastFortified = warden.Fortified;
+            warden.Clear();
         }
     }
 
