@@ -18,6 +18,11 @@ public sealed class MedicOptions : AbstractRoleOptionGroup<MedicRole>
         ["TouOptionMedicShieldEnumMedic", "TouOptionMedicShieldEnumShielded", "TouOptionMedicShieldEnumShieldedAndMedic", "TouOptionMedicShieldEnumEveryone", "TouOptionMedicShieldEnumNobody"])]
     public MedicOption WhoGetsNotification { get; set; } = MedicOption.Medic;
 
+    public ModdedToggleOption NotifyInMeeting { get; } = new("TouOptionMedicNotifyInMeeting", false)
+    {
+        Visible = () => OptionGroupSingleton<MedicOptions>.Instance.WhoGetsNotification == MedicOption.Medic
+    };
+
     [ModdedToggleOption("TouOptionMedicCanGiveShieldAwayNextRound")]
     public bool ChangeTarget { get; set; } = true;
 

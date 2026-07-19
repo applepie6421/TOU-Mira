@@ -943,6 +943,7 @@
   <!-- Medic Options -->
   <string name="TouOptionMedicShowShieldedPlayer">Show Shielded Player</string>
   <string name="TouOptionMedicWhoGetsMurderAttemptIndicator">Who Gets Murder Attempt Indicator</string>
+  <string name="TouOptionMedicNotifyInMeeting">Notify Medic In Meeting Instead Of Flash</string>
   <string name="TouOptionMedicCanGiveShieldAwayNextRound">Can Give Shield Away Next Round</string>
   <string name="TouOptionMedicMaxAmountOfShieldUses">Max Amount of Shield Uses</string>
   <string name="TouOptionMedicShieldBreaksOnMurderAttempt">Shield Breaks On Murder Attempt</string>
@@ -956,6 +957,8 @@
   <string name="TouOptionMedicShieldEnumNobody">Nobody</string>
   <!-- Medic Feedback -->
   <string name="TouRoleMedicMessageTitle">Medic Body Report</string>
+  <string name="TouRoleMedicShieldAttackedTitle">Medic Feedback</string>
+  <string name="TouRoleMedicShieldAttackedMessage">Your target was attacked!</string>
   <string name="TouRoleMedicBodyError">The corpse could not give any information.\%nl\%Died \%time\%s ago.</string>
   <string name="TouRoleMedicBodyOld">The corpse is too old to gain information from.\%nl\%Died \%time\%s ago.</string>
   <string name="TouRoleMedicBodySuicide">The kill appears to have been a suicide!\%nl\%Died \%time\%s ago.</string>

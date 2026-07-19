@@ -24,6 +24,8 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
 
     [HideFromIl2Cpp] public PlayerControl? Shielded { get; set; }
 
+    public bool ShieldAttackedRecently { get; set; }
+
     public void FixedUpdate()
     {
         if (!Player || Player.Data.Role is not MedicRole)
@@ -119,6 +121,19 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
     public override void OnMeetingStart()
     {
         RoleBehaviourStubs.OnMeetingStart(this);
+
+        if (ShieldAttackedRecently)
+        {
+            ShieldAttackedRecently = false;
+
+            if (Player.AmOwner && OptionGroupSingleton<MedicOptions>.Instance.NotifyInMeeting.Value)
+            {
+                var title = $"<color=#{TownOfUsColors.Medic.ToHtmlStringRGBA()}>{TouLocale.Get("TouRoleMedicShieldAttackedTitle")}</color>";
+                var msg = TouLocale.GetParsed("TouRoleMedicShieldAttackedMessage");
+
+                MiscUtils.AddFakeChat(Player.Data, title, msg, false, true);
+            }
+        }
 
         var meeting = MeetingHud.Instance;
         if (Player.AmOwner && meeting != null)
@@ -413,7 +428,14 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
 
         if (medic.AmOwner && shieldNotify == MedicOption.Medic)
         {
-            DangerAnim();
+            if (OptionGroupSingleton<MedicOptions>.Instance.NotifyInMeeting.Value)
+            {
+                role.ShieldAttackedRecently = true;
+            }
+            else
+            {
+                DangerAnim();
+            }
         }
 
         if (source.AmOwner)
