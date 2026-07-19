@@ -32,6 +32,16 @@ public sealed class GameMechanicOptions : AbstractOptionGroup
 
     [ModdedNumberOption("Temp Save Cooldown Reset", 0f, 15f, 0.5f, MiraNumberSuffixes.Seconds, "0.#")]
     public float TempSaveCdReset { get; set; } = 5f;
+
+    [ModdedEnumOption("Breakable Shield Cooldown Reset", typeof(ShieldBreakCooldownMode),
+        ["Full", "Half"])]
+    public ShieldBreakCooldownMode ShieldBreakCooldown { get; set; } = ShieldBreakCooldownMode.Half;
+}
+
+public enum ShieldBreakCooldownMode
+{
+    Full,
+    Half
 }
 
 public enum BodyVitalsMode

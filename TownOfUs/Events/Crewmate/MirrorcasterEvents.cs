@@ -4,13 +4,11 @@ using MiraAPI.Events.Vanilla.Gameplay;
 using MiraAPI.Hud;
 using MiraAPI.Modifiers;
 using TownOfUs.Buttons;
-using TownOfUs.Buttons.Neutral;
 using TownOfUs.Modifiers;
 using TownOfUs.Modifiers.Crewmate;
 using TownOfUs.Modifiers.Game;
 using TownOfUs.Modules;
 using TownOfUs.Roles.Crewmate;
-using TownOfUs.Roles.Neutral;
 
 namespace TownOfUs.Events.Crewmate;
 
@@ -108,17 +106,6 @@ public static class MirrorcasterEvents
 
     private static void ResetButtonTimer(PlayerControl source, CustomActionButton<PlayerControl>? button = null)
     {
-        if (!source.AmOwner)
-        {
-            return;
-        }
-
-        button?.ResetCooldownAndOrEffect();
-
-        if (source.Data.Role is WerewolfRole)
-        {
-            CustomButtonSingleton<WerewolfRampageButton>.Instance.ResetCooldownAndOrEffect();
-        }
-        source.SetKillTimer(source.GetKillCooldown());
+        MiscUtils.ResetKillerCooldownOnShieldBreak(source, button);
     }
 }

@@ -6,7 +6,6 @@ using MiraAPI.Hud;
 using MiraAPI.Modifiers;
 using MiraAPI.Roles;
 using Reactor.Utilities;
-using TownOfUs.Buttons.Neutral;
 using TownOfUs.Modifiers;
 using TownOfUs.Modifiers.Crewmate;
 using TownOfUs.Modifiers.Neutral;
@@ -20,19 +19,7 @@ public static class MercenaryEvents
 {
     private static void ResetButtonTimer(PlayerControl source, CustomActionButton<PlayerControl>? button = null)
     {
-        if (!source.AmOwner)
-        {
-            return;
-        }
-
-        button?.ResetCooldownAndOrEffect();
-
-        if (source.Data.Role is WerewolfRole)
-        {
-            CustomButtonSingleton<WerewolfRampageButton>.Instance.ResetCooldownAndOrEffect();
-        }
-
-        source.SetKillTimer(source.GetKillCooldown());
+        MiscUtils.ResetKillerCooldownOnShieldBreak(source, button);
     }
     [RegisterEvent]
     public static void MiraButtonClickEventHandler(MiraButtonClickEvent @event)

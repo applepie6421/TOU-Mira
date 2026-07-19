@@ -19,6 +19,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using PowerTools;
 using TMPro;
+using TownOfUs.Buttons.Neutral;
 using TownOfUs.Events;
 using TownOfUs.Interfaces;
 using TownOfUs.Modifiers;
@@ -31,6 +32,7 @@ using TownOfUs.Patches;
 using TownOfUs.Patches.Misc;
 using TownOfUs.Patches.Options;
 using TownOfUs.Roles;
+using TownOfUs.Roles.Neutral;
 using TownOfUs.Roles.Other;
 using TownOfUs.Utilities.Appearances;
 using UnityEngine;
@@ -41,6 +43,41 @@ namespace TownOfUs.Utilities;
 
 public static class MiscUtils
 {
+    public static void ResetKillerCooldownOnShieldBreak(PlayerControl source, CustomActionButton? button = null)
+    {
+        if (!source.AmOwner)
+        {
+            return;
+        }
+
+        var half = OptionGroupSingleton<GameMechanicOptions>.Instance.ShieldBreakCooldown == ShieldBreakCooldownMode.Half;
+
+        ResetBreakableButton(button, half);
+
+        if (source.Data.Role is WerewolfRole)
+        {
+            ResetBreakableButton(CustomButtonSingleton<WerewolfRampageButton>.Instance, half);
+        }
+
+        source.SetKillTimer(source.GetKillCooldown() * (half ? 0.5f : 1f));
+    }
+
+    private static void ResetBreakableButton(CustomActionButton? button, bool half)
+    {
+        if (button == null)
+        {
+            return;
+        }
+
+        if (half)
+        {
+            button.SetTimer(button.Cooldown * 0.5f);
+        }
+        else
+        {
+            button.ResetCooldownAndOrEffect();
+        }
+    }
 
     public static int GameHaltersAliveCount => Helpers.GetAlivePlayers().Count(x =>
         x.Data.Role is IContinuesGame gameHalt && gameHalt.ContinuesGame || x.GetModifiers<BaseModifier>()
