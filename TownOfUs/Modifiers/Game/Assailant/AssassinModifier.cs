@@ -297,6 +297,11 @@ public class AssassinModifier : TouGameModifier, IWikiDiscoverable
 
                 notif1.AdjustNotification();
 
+                if (OptionGroupSingleton<DoubleShotOptions>.Instance.PreventGuessingAfterMisguess.Value)
+                {
+                    meetingMenu?.HideButtons();
+                }
+
                 shapeMenu.Close();
                 LastGuessedItem = string.Empty;
                 LastAttemptedVictim = null;
