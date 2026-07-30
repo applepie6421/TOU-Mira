@@ -6,7 +6,7 @@ using TownOfUs.Roles.Crewmate;
 
 namespace TownOfUs.Options.Roles.Crewmate;
 
-public sealed class VeteranOptions : AbstractOptionGroup<VeteranRole>
+public sealed class VeteranOptions : AbstractRoleOptionGroup<VeteranRole>
 {
     public override string GroupName => TouLocale.Get("TouRoleVeteran", "Veteran");
 
@@ -16,8 +16,12 @@ public sealed class VeteranOptions : AbstractOptionGroup<VeteranRole>
     [ModdedNumberOption("TouOptionVeteranAlertDuration", 5f, 15f, 2.5f, MiraNumberSuffixes.Seconds)]
     public float AlertDuration { get; set; } = 10f;
 
-    [ModdedNumberOption("TouOptionVeteranMaxNumberofAlerts", 1f, 15f, 1f, MiraNumberSuffixes.None, "0")]
-    public float MaxNumAlerts { get; set; } = 5f;
+    public ModdedNumberOption MaxNumAlerts { get; } = new("TouOptionVeteranMaxNumberofAlerts", 5f, -1f, 15f, 1f, "0", "∞", MiraNumberSuffixes.None, "0");
+
+    public ModdedNumberOption AlertsPerTasks { get; } = new("TouOptionVeteranAlertsPerTasks", 3f, 0f, 15f, 1f, "Off", "#", MiraNumberSuffixes.None, "0")
+    {
+        Visible = () => OptionGroupSingleton<VeteranOptions>.Instance.MaxNumAlerts != -1
+    };
 
     [ModdedToggleOption("TouOptionVeteranCanBeKilledOnAlert")]
     public bool KilledOnAlert { get; set; } = false;
@@ -27,7 +31,4 @@ public sealed class VeteranOptions : AbstractOptionGroup<VeteranRole>
         Visible = () =>
             !OptionGroupSingleton<VeteranOptions>.Instance.KilledOnAlert
     };
-
-    [ModdedToggleOption("TouOptionVeteranGetMoreUsesFromCompletingTasks")]
-    public bool TaskUses { get; set; } = true;
 }

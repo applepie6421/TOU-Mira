@@ -11,6 +11,7 @@ using MiraAPI.GameOptions;
 using TMPro;
 using TownOfUs.Events;
 using TownOfUs.Events.TouEvents;
+using TownOfUs.Interfaces;
 using TownOfUs.Modifiers;
 using TownOfUs.Modifiers.Crewmate;
 using TownOfUs.Modifiers.Game;
@@ -28,6 +29,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using static TownOfUs.Modules.Components.HudManagerHelper;
 
 namespace TownOfUs.Patches;
 
@@ -61,7 +63,7 @@ public static class EndGamePatches
             {
                 EndGameData.PlayerRecords.Add(new EndGameData.PlayerRecord
                 {
-                    ChatSummaryTitle = $"{playerControl.Data.PlayerName} - {TouLocale.Get("TouRoleSpectator")}",
+                    ChatSummaryTitle = $"{playerControl.Data.PlayerName} - {MiscUtils.GetRoleTmpIcon((RoleTypes)RoleId.Get<SpectatorRole>())}{TouLocale.Get("TouRoleSpectator")}",
                     ChatSummaryRoleInfo = string.Empty,
                     ChatSummaryStats = string.Empty,
                     ChatSummaryCod = string.Empty,
@@ -79,6 +81,7 @@ public static class EndGamePatches
             var latestRole = string.Empty;
             var changedAgain = false;
 
+            var lastRole = RoleManager.Instance.GetRole(RoleTypes.Crewmate);
             foreach (var role in GameHistory.RoleHistory.Where(x => x.Key == playerControl.PlayerId)
                          .Select(x => x.Value))
             {
@@ -102,11 +105,14 @@ public static class EndGamePatches
                         : StringNames.Crewmate);
                 }
 
+                roleName = $"{MiscUtils.GetRoleTmpIcon(role)}{roleName}";
+
                 if (latestRole != string.Empty)
                 {
                     changedAgain = true;
                 }
                 latestRole = $"{color.ToTextColor()}{roleName}</color>";
+                lastRole = role;
 
                 playerRoleString.Append(TownOfUsPlugin.Culture, $"{color.ToTextColor()}{roleName}</color> > ");
             }
@@ -118,9 +124,6 @@ public static class EndGamePatches
             {
                 summaryRoleInfo.Append(playerRoleString);
             }
-
-            var lastRole = GameHistory.AllRoles.FirstOrDefault(x => x.Player.PlayerId == playerControl.PlayerId);
-            var playerRoleType = lastRole!.Role;
             var playerTeam = ModdedRoleTeams.Crewmate;
 
             if (lastRole is ITownOfUsRole touRole)
@@ -192,7 +195,20 @@ public static class EndGamePatches
                 }
             }
 
-            if (playerControl.IsRole<SpectreRole>() || playerTeam == ModdedRoleTeams.Crewmate)
+            if (playerControl.Data.Role is IProgressTally tally)
+            {
+                if (tally.ProgressOnSummaryNormal != string.Empty)
+                {
+                    playerRoleString.Append(TownOfUsPlugin.Culture,
+                        $" {tally.ProgressOnSummaryNormal}");
+                }
+
+                if (tally.ProgressOnSummaryDetailed != string.Empty)
+                {
+                    summaryStats.Append(TownOfUsPlugin.Culture, $" | {tally.ProgressOnSummaryDetailed}");
+                }
+            }
+            else if (playerTeam == ModdedRoleTeams.Crewmate)
             {
                 var taskInfo = playerControl.TaskInfo();
                 playerRoleString.Append(TownOfUsPlugin.Culture,
@@ -331,7 +347,7 @@ public static class EndGamePatches
                 RoleString = playerRoleString.ToString(),
                 RoleStringShort = playerRoleStringShort.ToString(),
                 Winner = playerWinner,
-                LastRole = playerRoleType,
+                LastRole = lastRole.Role,
                 Team = playerTeam,
                 PlayerId = playerControl.PlayerId
             });
@@ -472,14 +488,14 @@ public static class EndGamePatches
             tmp2.ResetText();
         }
 
-        switch (LocalSettingsTabSingleton<TownOfUsLocalMiscSettings>.Instance.EndSummaryVisibility.Value)
+        switch (LocalSettingsTabSingleton<TouLocalTabPreferences>.Instance.EndSummaryVisibility.Value)
         {
             default:
                 // No summary
                 roleSummary.gameObject.SetActive(false);
                 roleSummary2.gameObject.SetActive(false);
                 roleSummaryLeft.gameObject.SetActive(false);
-                LocalSettingsTabSingleton<TownOfUsLocalMiscSettings>.Instance.EndSummaryVisibility.Value = EndGameSummaryVisibility.Hidden;
+                LocalSettingsTabSingleton<TouLocalTabPreferences>.Instance.EndSummaryVisibility.Value = EndGameSummaryVisibility.Hidden;
                 break;
             case EndGameSummaryVisibility.Split:
                 // Split summary
@@ -497,28 +513,28 @@ public static class EndGamePatches
 
         var toggleAction = new Action(() =>
         {
-            switch (LocalSettingsTabSingleton<TownOfUsLocalMiscSettings>.Instance.EndSummaryVisibility.Value)
+            switch (LocalSettingsTabSingleton<TouLocalTabPreferences>.Instance.EndSummaryVisibility.Value)
             {
                 case EndGameSummaryVisibility.Hidden:
                     // Split summary
                     roleSummary.gameObject.SetActive(true);
                     roleSummary2.gameObject.SetActive(true);
                     roleSummaryLeft.gameObject.SetActive(false);
-                    LocalSettingsTabSingleton<TownOfUsLocalMiscSettings>.Instance.EndSummaryVisibility.Value = EndGameSummaryVisibility.Split;
+                    LocalSettingsTabSingleton<TouLocalTabPreferences>.Instance.EndSummaryVisibility.Value = EndGameSummaryVisibility.Split;
                     break;
                 case EndGameSummaryVisibility.Split:
                     // Left side summary
                     roleSummary.gameObject.SetActive(false);
                     roleSummary2.gameObject.SetActive(false);
                     roleSummaryLeft.gameObject.SetActive(true);
-                    LocalSettingsTabSingleton<TownOfUsLocalMiscSettings>.Instance.EndSummaryVisibility.Value = EndGameSummaryVisibility.LeftSide;
+                    LocalSettingsTabSingleton<TouLocalTabPreferences>.Instance.EndSummaryVisibility.Value = EndGameSummaryVisibility.LeftSide;
                     break;
                 case EndGameSummaryVisibility.LeftSide:
                     // No summary
                     roleSummary.gameObject.SetActive(false);
                     roleSummary2.gameObject.SetActive(false);
                     roleSummaryLeft.gameObject.SetActive(false);
-                    LocalSettingsTabSingleton<TownOfUsLocalMiscSettings>.Instance.EndSummaryVisibility.Value = EndGameSummaryVisibility.Hidden;
+                    LocalSettingsTabSingleton<TouLocalTabPreferences>.Instance.EndSummaryVisibility.Value = EndGameSummaryVisibility.Hidden;
                     break;
             }
         });
@@ -540,32 +556,65 @@ public static class EndGamePatches
             foreach (var player in array)
             {
                 var realPlayer = winnerArray.FirstOrDefault(x => x.PlayerName == player.cosmetics.nameText.text);
-                if (realPlayer == null)
-                {
-                    realPlayer = winnerArray.FirstOrDefault(x => x.Outfit.HatId == player.cosmetics.hat.Hat.ProdId
+                realPlayer ??= winnerArray.FirstOrDefault(x => x.Outfit.HatId == player.cosmetics.hat.Hat.ProdId
                                                                  && x.Outfit.ColorId ==
                                                                  player.cosmetics
-                                                                     .ColorId /*&& HatManager.Instance.GetPetById(x.Outfit.PetId) == player.cosmetics.currentPet */);
-                }
+                                                                     .ColorId);
 
                 if (realPlayer == null)
                 {
                     continue;
                 }
+                var actualRole = RoleManager.Instance.GetRole(realPlayer.RoleWhenAlive);
+                var realDealPlayer = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.CurrentOutfit == realPlayer.Outfit);
+                if (realDealPlayer != null)
+                {
+                    foreach (var role in GameHistory.RoleHistory.Where(x => x.Key == realDealPlayer.PlayerId)
+                                 .Select(x => x.Value))
+                    {
+                        if (role.Role is RoleTypes.CrewmateGhost or RoleTypes.ImpostorGhost ||
+                            role.Role == (RoleTypes)RoleId.Get<NeutralGhostRole>())
+                        {
+                            continue;
+                        }
+                        actualRole = role;
+                    }
+                }
 
-                var roleType = realPlayer.RoleWhenAlive;
-                var role = RoleManager.Instance.GetRole(roleType);
-
-                if (role is JesterRole)
+                if (actualRole is JesterRole)
                 {
                     player.UpdateFromPlayerOutfit(realPlayer.Outfit, PlayerMaterial.MaskType.None,
                         false, true);
+                }
+                else if (actualRole is IGhostRole)
+                {
+                    player.UpdateFromPlayerOutfit(realPlayer.Outfit, PlayerMaterial.MaskType.None,
+                        false, true);
+                    foreach (var renderer in player.Cosmetics.transform.GetComponentsInChildren<SpriteRenderer>())
+                    {
+                        var col = renderer.color;
+                        col.a = 0.5f;
+                        renderer.color = col;
+                    }
+                    var col2 = player.Cosmetics.currentBodySprite.BodySprite.color;
+                    col2.a = 0.5f;
+                    player.Cosmetics.currentBodySprite.BodySprite.color = col2;
+                    if (player.Cosmetics.bodySprites.Count > 0)
+                    {
+                        foreach (var body in player.Cosmetics.bodySprites)
+                        {
+                            var renderer = body.BodySprite;
+                            var col = renderer.color;
+                            col.a = 0.5f;
+                            renderer.color = col;
+                        }
+                    }
                 }
 
                 var nameTxt = player.cosmetics.nameText;
                 nameTxt.gameObject.SetActive(true);
                 player.SetName(
-                    $"\n<size=85%>{realPlayer.PlayerName}</size>\n<size=65%><color=#{role.TeamColor.ToHtmlStringRGBA()}>{role.GetRoleName()}</size>",
+                    $"\n<size=85%>{realPlayer.PlayerName}</size>\n<size=65%><color=#{actualRole.TeamColor.ToHtmlStringRGBA()}>{MiscUtils.GetRoleTmpIcon(actualRole)}{actualRole.GetRoleName()}</size>",
                     new Vector3(1.1619f, 1.1619f, 1f), Color.white, -15f);
                 player.SetNamePosition(new Vector3(0f, -1.31f, -0.5f));
                 nameTxt.fontSize = 1.9f;
@@ -666,25 +715,31 @@ public static class EndGamePatches
             PlayerRecords.Clear();
         }
 
-        public sealed class PlayerRecord
+        public sealed record PlayerRecord
         {
-            public string? ChatSummaryTitle { get; set; }
-            public string? ChatSummaryRoleInfo { get; set; }
-            public string? ChatSummaryStats { get; set; }
-            public string? ChatSummaryCod { get; set; }
-            public string? PlayerName { get; set; }
-            public string? RoleString { get; set; }
-            public string? RoleStringShort { get; set; }
-            public bool Winner { get; set; }
-            public RoleTypes LastRole { get; set; }
-            public ModdedRoleTeams Team { get; set; }
-            public byte PlayerId { get; set; }
+            public string? ChatSummaryTitle { get; init; }
+            public string? ChatSummaryRoleInfo { get; init; }
+            public string? ChatSummaryStats { get; init; }
+            public string? ChatSummaryCod { get; init; }
+            public string? PlayerName { get; init; }
+            public string? RoleString { get; init; }
+            public string? RoleStringShort { get; init; }
+            public bool Winner { get; init; }
+            public RoleTypes LastRole { get; init; }
+            public ModdedRoleTeams Team { get; init; }
+            public byte PlayerId { get; init; }
         }
     }
 
     public static class ContainedMeetingData
     {
         public static List<PlayerMeetingRecord> PlayerMeetingRecords { get; set; } = [];
+
+        private static string GetCauseOfDeathString(string parsedData)
+        {
+            var curRound = DeathEventHandlers.CurrentRound;
+            return $"<size=60%>『{Color.yellow.ToTextColor()}{parsedData.Replace("<round>", $"{curRound}")}</color>』</size>";
+        }
 
         public static void AddPlayerData(PlayerControl player)
         {
@@ -695,23 +750,16 @@ public static class EndGamePatches
             Warning($"Added Meeting Record for {player.Data.PlayerName}");
             var curRound = DeathEventHandlers.CurrentRound;
             var genOpt = OptionGroupSingleton<GeneralOptions>.Instance;
-            var taskOpt = OptionGroupSingleton<TaskTrackingOptions>.Instance;
+            var taskOpt = OptionGroupSingleton<PostmortemOptions>.Instance;
 
-            var causeOfDeath = $"<size=60%>『{Color.yellow.ToTextColor()}{TouLocale.GetParsed("DisconnectedData").Replace("<round>", $"{curRound}")}</color>』</size>";
-            var causeOfDeathFull = $"<size=60%>『{Color.yellow.ToTextColor()}{TouLocale.GetParsed("DisconnectedDataFull").Replace("<cod>", TouLocale.Get("Alive")).Replace("<round>", $"{curRound}")}</color>』</size>";
+            var causeOfDeath = GetCauseOfDeathString(TouLocale.GetParsed("DisconnectedData"));
+            var causeOfDeathFull = GetCauseOfDeathString(TouLocale.GetParsed("DisconnectedDataFull").Replace("<cod>", TouLocale.Get("Alive")));
             var playerName = player.Data.PlayerName ?? "Unknown";
             var playerNameColored = player.Data.PlayerName ?? "Unknown";
             var playerNameFull = player.Data.PlayerName ?? "Unknown";
             var playerNameColoredFull = player.Data.PlayerName ?? "Unknown";
             var playerColor = Color.white;
             var playerColorColored = Color.white;
-
-            static string GetDiedR1ExtraNameTextForDisplayedIdentity(PlayerControl player)
-            {
-                var mod = player.GetModifiers<BaseRevealModifier>()
-                    .FirstOrDefault(x => x.Visible && x is FirstRoundIndicator && x.ExtraNameText != string.Empty);
-                return mod?.ExtraNameText ?? string.Empty;
-            }
 
             var roleNameSize = HudManagerPatches.RoleIsSmall ? "80%" : "100%";
             var roleOnTop = HudManagerPatches.RoleOnTop;
@@ -734,26 +782,14 @@ public static class EndGamePatches
                 }
 
                 playerColor = playerColor.UpdateTargetColor(player);
-                playerName = playerName.UpdateTargetSymbols(player);
-                playerName = playerName.UpdateProtectionSymbols(player);
-                playerName = playerName.UpdateAllianceSymbols(player);
-                playerName = playerName.UpdateStatusSymbols(player);
+                playerName = playerName.UpdateAllSymbols(player);
 
-                playerNameFull = playerNameFull.UpdateTargetSymbols(player, DataVisibility.Show);
-                playerNameFull = playerNameFull.UpdateProtectionSymbols(player, DataVisibility.Show);
-                playerNameFull = playerNameFull.UpdateAllianceSymbols(player, DataVisibility.Show);
-                playerNameFull = playerNameFull.UpdateStatusSymbols(player, DataVisibility.Show);
+                playerNameFull = playerNameFull.UpdateAllSymbols(player, DataVisibility.Show);
 
                 playerColorColored = playerColorColored.UpdateTargetColor(player);
-                playerNameColored = playerNameColored.UpdateTargetSymbols(player);
-                playerNameColored = playerNameColored.UpdateProtectionSymbols(player);
-                playerNameColored = playerNameColored.UpdateAllianceSymbols(player);
-                playerNameColored = playerNameColored.UpdateStatusSymbols(player);
+                playerNameColored = playerNameColored.UpdateAllSymbols(player);
 
-                playerNameColoredFull = playerNameColoredFull.UpdateTargetSymbols(player, DataVisibility.Show);
-                playerNameColoredFull = playerNameColoredFull.UpdateProtectionSymbols(player, DataVisibility.Show);
-                playerNameColoredFull = playerNameColoredFull.UpdateAllianceSymbols(player, DataVisibility.Show);
-                playerNameColoredFull = playerNameColoredFull.UpdateStatusSymbols(player, DataVisibility.Show);
+                playerNameColoredFull = playerNameColoredFull.UpdateAllSymbols(player, DataVisibility.Show);
 
                 var localSleuth = SleuthModifier.SleuthVisibilityFlag(player);
                 var role = player.Data.Role;
@@ -908,26 +944,53 @@ public static class EndGamePatches
                     roleNameFull += $"<size={roleNameSize}>{addedRoleNameText.ExtraRoleText}</size>";
                 }
 
-                if (((taskOpt.ShowTaskInMeetings && player.AmOwner) ||
-                     (localDead && taskOpt.ShowTaskDead)) &&
-                    (player.IsCrewmate() || player.Data.Role is SpectreRole))
+                if (HudManagerPatches.PlayerNameProgress == ProgressTracking.Always ||
+                    HudManagerPatches.PlayerNameProgress == ProgressTracking.OnSelf && player.AmOwner ||
+                    HudManagerPatches.PlayerNameProgress == ProgressTracking.OnOthers && !player.AmOwner)
                 {
-                    if (roleName != string.Empty)
+                    if (player.Data.Role is IProgressTally tally && tally.ProgressOnName(localDead, true, player.AmOwner, out var progress))
                     {
-                        roleName += " ";
+                        var placement = tally.TallyPlacement(true);
+                        if (HudManagerPatches.RoleIsSmall && placement == TallyLocation.Auto || placement == TallyLocation.RoleName)
+                        {
+                            if (roleName != string.Empty)
+                            {
+                                roleName += " ";
+                            }
+
+                            roleName += $"<size={roleNameSize}>{progress}</size>";
+                        }
+                        else if (placement == TallyLocation.Auto || placement == TallyLocation.PlayerName)
+                        {
+                            playerName += $" {progress}";
+                        }
+                        else if (placement == TallyLocation.BelowName)
+                        {
+                            bottomText += $"\n{progress}";
+                        }
+                        else if (placement == TallyLocation.AboveName)
+                        {
+                            topText += $"{progress}\n";
+                        }
                     }
-
-                    roleName += $"<size={roleNameSize}>{player.TaskInfo()}</size>";
-                }
-
-                if (taskOpt.ShowTaskDead && (player.IsCrewmate() || player.Data.Role is SpectreRole))
-                {
-                    if (roleNameFull != string.Empty)
+                    else if ((player.AmOwner ||
+                              (localDead && taskOpt.ShowTaskDead.Value)) &&
+                             player.IsCrewmate())
                     {
-                        roleNameFull += " ";
-                    }
+                        if (HudManagerPatches.RoleIsSmall)
+                        {
+                            if (roleName != string.Empty)
+                            {
+                                roleName += " ";
+                            }
 
-                    roleNameFull += $"<size={roleNameSize}>{player.TaskInfo()}</size>";
+                            roleName += $"<size={roleNameSize}>{player.TaskInfo()}</size>";
+                        }
+                        else
+                        {
+                            playerName += $" {player.TaskInfo()}";
+                        }
+                    }
                 }
 
                 if (player.TryGetModifier<OracleConfessModifier>(out var confess, x => x.ConfessToAll))
@@ -958,7 +1021,7 @@ public static class EndGamePatches
                     playerNameColoredFull += addedPlayerNameText.ExtraNameText;
                 }
 
-                var diedR1Text = GetDiedR1ExtraNameTextForDisplayedIdentity(player);
+                var diedR1Text = GetDiedR1ExtraNameTextForDisplayedIdentity(player, false);
                 if (!string.IsNullOrEmpty(diedR1Text))
                 {
                     bottomText += diedR1Text;
@@ -1068,15 +1131,15 @@ public static class EndGamePatches
             PlayerMeetingRecords.Clear();
         }
 
-        public sealed class PlayerMeetingRecord
+        public sealed record PlayerMeetingRecord
         {
-            public string PlayerNameUncolored { get; set; }
-            public string PlayerNameColored { get; set; }
-            public string PlayerNameUncoloredFull { get; set; }
-            public string PlayerNameColoredFull { get; set; }
-            public Color PlayerColorUncolored { get; set; }
-            public Color PlayerColorColored { get; set; }
-            public byte PlayerId { get; set; }
+            public string PlayerNameUncolored { get; init; }
+            public string PlayerNameColored { get; init; }
+            public string PlayerNameUncoloredFull { get; init; }
+            public string PlayerNameColoredFull { get; init; }
+            public Color PlayerColorUncolored { get; init; }
+            public Color PlayerColorColored { get; init; }
+            public byte PlayerId { get; init; }
         }
     }
 }

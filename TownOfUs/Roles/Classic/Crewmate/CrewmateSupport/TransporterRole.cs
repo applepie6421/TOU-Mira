@@ -44,12 +44,12 @@ public sealed class TransporterRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITown
     {
         get
         {
-            return new List<CustomButtonWikiDescription>
-            {
+            return
+            [
                 new(TouLocale.GetParsed($"TouRole{LocaleKey}Transport", "Transport"),
                     TouLocale.GetParsed($"TouRole{LocaleKey}TransportWikiDescription"),
                     TouCrewAssets.Transport)
-            };
+            ];
         }
     }
 
@@ -59,6 +59,7 @@ public sealed class TransporterRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITown
 
     public CustomRoleConfiguration Configuration => new(this)
     {
+        IconTmp = TmpSpriteUtils.CreateSpriteAsset(TouRoleIcons.Transporter.LoadAsset(), "TouMira.Role.Crewmate.Transporter", 1.45f),
         Icon = TouRoleIcons.Transporter,
         OptionsScreenshot = TouBanners.CrewmateRoleBanner,
         IntroSound = TouAudio.TimeLordIntroSound
@@ -194,7 +195,7 @@ public sealed class TransporterRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITown
             return;
         }
 
-        if (play1.HasModifier<VeteranAlertModifier>())
+        if (play1.HasModifier<VeteranAlertModifier>() || play1.HasModifier<MedusaGazingModifier>())
         {
             if (transporter.AmOwner)
             {
@@ -204,7 +205,7 @@ public sealed class TransporterRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITown
             return;
         }
 
-        if (play2.HasModifier<VeteranAlertModifier>())
+        if (play2.HasModifier<VeteranAlertModifier>() || play2.HasModifier<MedusaGazingModifier>())
         {
             if (transporter.AmOwner)
             {
@@ -260,13 +261,10 @@ public sealed class TransporterRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITown
             if (button.TextOutlineColor != Color.clear)
             {
                 button.SetTextOutline(button.TextOutlineColor);
-                if (button.Button != null)
-                {
-                    button.Button.usesRemainingSprite.color = button.TextOutlineColor;
-                }
+                button.Button?.usesRemainingSprite.color = button.TextOutlineColor;
             }
 
-            TownOfUsColors.UseBasic = LocalSettingsTabSingleton<TownOfUsLocalRoleSettings>.Instance
+            TownOfUsColors.UseBasic = LocalSettingsTabSingleton<TouLocalTabPlayers>.Instance
                 .UseCrewmateTeamColorToggle.Value;
         }
 

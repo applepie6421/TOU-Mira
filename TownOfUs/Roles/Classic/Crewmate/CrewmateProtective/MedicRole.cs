@@ -55,12 +55,12 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
     {
         get
         {
-            return new List<CustomButtonWikiDescription>
-            {
+            return
+            [
                 new(TouLocale.GetParsed($"TouRole{LocaleKey}Shield", "Shield"),
                     TouLocale.GetParsed($"TouRole{LocaleKey}ShieldWikiDescription"),
                     TouCrewAssets.MedicSprite)
-            };
+            ];
         }
     }
 
@@ -70,6 +70,7 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
 
     public CustomRoleConfiguration Configuration => new(this)
     {
+        IconTmp = TmpSpriteUtils.CreateSpriteAsset(TouRoleIcons.Medic.LoadAsset(), "TouMira.Role.Crewmate.Medic", 1.45f),
         IntroSound = TouAudio.ScientistIntroSound,
         OptionsScreenshot = TouBanners.MedicRoleBanner,
         Icon = TouRoleIcons.Medic
@@ -103,12 +104,16 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
                 MeetingAbilityType.Click,
                 TouAssets.LighterSprite,
                 null!,
-                voteArea => { return Player.Data.IsDead || voteArea!.AmDead; },
+                IsExempt,
                 hoverColor: Color.white)
             {
                 Position = new Vector3(1.1f, -0.18f, -3f)
             };
         }
+    }
+    public static bool IsExempt(PlayerVoteArea voteArea)
+    {
+        return false;
     }
 
     public override void OnMeetingStart()
@@ -119,7 +124,7 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
         if (Player.AmOwner && meeting != null)
         {
             meetingMenu.GenButtons(meeting,
-                Player.AmOwner && !Player.HasDied() && !Player.HasModifier<JailedModifier>());
+                true);
 
             foreach (var button in meetingMenu.Buttons)
             {
@@ -137,7 +142,7 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
                     continue;
                 }
 
-                var colorType = GetColorTypeForPlayer(player);
+                var colorType = GetColorTypeForPlayer(player.Data.DefaultOutfit.ColorId);
 
                 var renderer = button.Value.GetComponent<SpriteRenderer>();
 
@@ -201,9 +206,9 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
         {
             mod2.SetNewMedic(Player);
         }
-        else if (Shielded != null)
+        else
         {
-            Shielded.AddModifier<MedicShieldModifier>(Player);
+            Shielded?.AddModifier<MedicShieldModifier>(Player);
         }
     }
 
@@ -256,7 +261,7 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
         MiscUtils.AddFakeChat(reported.Data, title, reportMsg, false, true);
     }
 
-    public static string GetColorTypeForPlayer(PlayerControl player)
+    public static string GetColorTypeForPlayer(int colorId)
     {
         var colors = new Dictionary<int, string>
         {
@@ -317,7 +322,7 @@ public sealed class MedicRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsRo
             { 51, "lighter" } // rainbow
         };
 
-        var typeOfColor = colors[player.Data.DefaultOutfit.ColorId];
+        var typeOfColor = colors[colorId];
 
         return typeOfColor;
     }

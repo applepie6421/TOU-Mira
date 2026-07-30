@@ -127,6 +127,7 @@ public sealed class FairyRole(IntPtr cppPtr) : NeutralRole(cppPtr), ITownOfUsRol
 
     public CustomRoleConfiguration Configuration => new(this)
     {
+        IconTmp = TmpSpriteUtils.CreateSpriteAsset(TouRoleIcons.Fairy.LoadAsset(), "TouMira.Role.Neutral.Fairy", 1.45f),
         Icon = TouRoleIcons.Fairy,
         IntroSound = TouAudio.GuardianAngelSound,
         OptionsScreenshot = TouBanners.NeutralRoleBanner,
@@ -161,12 +162,12 @@ public sealed class FairyRole(IntPtr cppPtr) : NeutralRole(cppPtr), ITownOfUsRol
     {
         get
         {
-            return new List<CustomButtonWikiDescription>
-            {
+            return
+            [
                 new(TouLocale.GetParsed($"TouRole{LocaleKey}Protect", "Protect"),
                     TouLocale.GetParsed($"TouRole{LocaleKey}ProtectWikiDescription"),
                     TouNeutAssets.ProtectSprite)
-            };
+            ];
         }
     }
 

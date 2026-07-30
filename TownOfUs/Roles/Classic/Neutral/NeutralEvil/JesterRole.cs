@@ -6,6 +6,7 @@ using MiraAPI.Patches.Stubs;
 using MiraAPI.Roles;
 using TownOfUs.Interfaces;
 using TownOfUs.Modifiers;
+using TownOfUs.Modifiers.Game.Universal;
 using TownOfUs.Options.Roles.Neutral;
 using TownOfUs.Roles.Crewmate;
 using UnityEngine;
@@ -15,6 +16,10 @@ namespace TownOfUs.Roles.Neutral;
 public sealed class JesterRole(IntPtr cppPtr)
     : NeutralRole(cppPtr), ITownOfUsRole, IWikiDiscoverable, IDoomable, ICrewVariant, IGuessable
 {
+    public bool CanModifierContinueGame(BaseModifier modifier)
+    {
+        return modifier is TiebreakerModifier;
+    }
     public override void SpawnTaskHeader(PlayerControl playerControl)
     {
         if (!playerControl.AmOwner)
@@ -62,6 +67,7 @@ public sealed class JesterRole(IntPtr cppPtr)
 
     public CustomRoleConfiguration Configuration => new(this)
     {
+        IconTmp = TmpSpriteUtils.CreateSpriteAsset(TouRoleIcons.Jester.LoadAsset(), "TouMira.Role.Neutral.Jester", 1.45f),
         CanUseVent = OptionGroupSingleton<JesterOptions>.Instance.CanVent,
         IntroSound = TouAudio.NoisemakerIntroSound,
         GhostRole = (RoleTypes)RoleId.Get<NeutralGhostRole>(),
@@ -72,8 +78,6 @@ public sealed class JesterRole(IntPtr cppPtr)
     public bool MetWinCon => Voted;
 
     public bool HasImpostorVision => OptionGroupSingleton<JesterOptions>.Instance.ImpostorVision;
-
-
 
     public bool WinConditionMet()
     {
