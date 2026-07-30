@@ -15,6 +15,7 @@ public sealed class VeteranRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITouCrewR
     public override bool IsAffectedByComms => false;
 
     public int Alerts { get; set; }
+    public int TaskCount { get; set; }
     public bool AttackedRecently { get; set; }
     public DoomableType DoomHintType => DoomableType.Trickster;
     public string LocaleKey => "Veteran";
@@ -46,7 +47,7 @@ public sealed class VeteranRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITouCrewR
     public Color RoleColor => TownOfUsColors.Veteran;
     public ModdedRoleTeams Team => ModdedRoleTeams.Crewmate;
     public RoleAlignment RoleAlignment => RoleAlignment.CrewmateKilling;
-    public bool IsPowerCrew => Alerts > 0; // Stop end game checks if the veteran can still alert
+    public bool IsPowerCrew => Alerts != 0; // Stop end game checks if the veteran can still alert
 
     public CustomRoleConfiguration Configuration => new(this)
     {
@@ -100,5 +101,6 @@ public sealed class VeteranRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITouCrewR
     {
         RoleBehaviourStubs.Initialize(this, player);
         Alerts = (int)OptionGroupSingleton<VeteranOptions>.Instance.MaxNumAlerts;
+        TaskCount = 0;
     }
 }

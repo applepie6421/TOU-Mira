@@ -26,7 +26,7 @@ public sealed class VeteranAlertModifier : TimedModifier
         base.OnActivate();
 
         // This gets applied after alerting isn't possible, incase vet is left with one use in a 1v1 scenario
-        if (Player.Data.Role is VeteranRole vet)
+        if (Player.Data.Role is VeteranRole vet && vet.Alerts > 0)
         {
             vet.Alerts--;
         }

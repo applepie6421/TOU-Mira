@@ -22,8 +22,16 @@ public static class VeteranEvents
     [RegisterEvent]
     public static void CompleteTaskEvent(CompleteTaskEvent @event)
     {
-        if (@event.Player.Data.Role is VeteranRole vetRole &&
-            OptionGroupSingleton<VeteranOptions>.Instance.TaskUses)
+        var opt = OptionGroupSingleton<VeteranOptions>.Instance;
+        if (@event.Player.Data.Role is not VeteranRole vetRole)
+        {
+            return;
+        }
+
+        // Counted on every client so Alerts stays in sync, unlike the button work below.
+        ++vetRole.TaskCount;
+
+        if (opt.AlertsPerTasks != 0 && opt.AlertsPerTasks <= vetRole.TaskCount)
         {
             if (@event.Player.AmOwner)
             {
@@ -34,6 +42,7 @@ public static class VeteranEvents
             }
 
             ++vetRole.Alerts;
+            vetRole.TaskCount = 0;
         }
     }
 
