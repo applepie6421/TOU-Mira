@@ -17,17 +17,54 @@ namespace TownOfUs.Events.Crewmate;
 
 public static class LookoutEvents
 {
+    public static int ActiveWatchTaskCount;
+
+    [RegisterEvent]
+    public static void RoundStartEventHandler(RoundStartEvent @event)
+    {
+        if (!@event.TriggeredByIntro)
+        {
+            return;
+        }
+
+        ActiveWatchTaskCount = 0;
+
+        var watchButton = CustomButtonSingleton<WatchButton>.Instance;
+        watchButton.ExtraUses = 0;
+        watchButton.SetUses((int)OptionGroupSingleton<LookoutOptions>.Instance.MaxWatches);
+        if (!watchButton.LimitedUses)
+        {
+            watchButton.Button?.usesRemainingText.gameObject.SetActive(false);
+            watchButton.Button?.usesRemainingSprite.gameObject.SetActive(false);
+        }
+        else
+        {
+            watchButton.Button?.usesRemainingText.gameObject.SetActive(true);
+            watchButton.Button?.usesRemainingSprite.gameObject.SetActive(true);
+        }
+    }
+
     [RegisterEvent]
     public static void CompleteTaskEvent(CompleteTaskEvent @event)
     {
-        if (@event.Player.AmOwner && @event.Player.Data.Role is LookoutRole &&
-            OptionGroupSingleton<LookoutOptions>.Instance.TaskUses &&
-            !OptionGroupSingleton<LookoutOptions>.Instance.LoResetOnNewRound)
+        var opt = OptionGroupSingleton<LookoutOptions>.Instance;
+        var button = CustomButtonSingleton<WatchButton>.Instance;
+        if (@event.Player.AmOwner)
         {
-            var button = CustomButtonSingleton<WatchButton>.Instance;
-            ++button.UsesLeft;
-            ++button.ExtraUses;
-            button.SetUses(button.UsesLeft);
+            ++ActiveWatchTaskCount;
+            if (@event.Player.Data.Role is not LookoutRole || opt.LoResetOnNewRound)
+            {
+                return;
+            }
+
+            if (button.LimitedUses &&
+                opt.WatchesPerTasks != 0 && opt.WatchesPerTasks <= ActiveWatchTaskCount)
+            {
+                ++button.UsesLeft;
+                ++button.ExtraUses;
+                button.SetUses(button.UsesLeft);
+                ActiveWatchTaskCount = 0;
+            }
         }
     }
 

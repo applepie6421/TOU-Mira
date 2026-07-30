@@ -14,25 +14,54 @@ namespace TownOfUs.Events.Crewmate;
 
 public static class PlumberEvents
 {
+    public static int ActiveBarricadeTaskCount;
+
     [RegisterEvent]
     public static void RoundStartEventHandler(RoundStartEvent @event)
     {
         if (@event.TriggeredByIntro)
         {
             PlumberRole.ClearAll();
+
+            ActiveBarricadeTaskCount = 0;
+
+            var blockButton = CustomButtonSingleton<PlumberBlockButton>.Instance;
+            blockButton.ExtraUses = 0;
+            blockButton.SetUses((int)OptionGroupSingleton<PlumberOptions>.Instance.MaxBarricades);
+            if (!blockButton.LimitedUses)
+            {
+                blockButton.Button?.usesRemainingText.gameObject.SetActive(false);
+                blockButton.Button?.usesRemainingSprite.gameObject.SetActive(false);
+            }
+            else
+            {
+                blockButton.Button?.usesRemainingText.gameObject.SetActive(true);
+                blockButton.Button?.usesRemainingSprite.gameObject.SetActive(true);
+            }
         }
     }
 
     [RegisterEvent]
     public static void CompleteTaskEvent(CompleteTaskEvent @event)
     {
-        if (@event.Player.AmOwner && @event.Player.Data.Role is PlumberRole &&
-            OptionGroupSingleton<PlumberOptions>.Instance.TaskUses)
+        var opt = OptionGroupSingleton<PlumberOptions>.Instance;
+        var button = CustomButtonSingleton<PlumberBlockButton>.Instance;
+        if (@event.Player.AmOwner)
         {
-            var button = CustomButtonSingleton<PlumberBlockButton>.Instance;
-            ++button.UsesLeft;
-            ++button.ExtraUses;
-            button.SetUses(button.UsesLeft);
+            ++ActiveBarricadeTaskCount;
+            if (@event.Player.Data.Role is not PlumberRole)
+            {
+                return;
+            }
+
+            if (button.LimitedUses &&
+                opt.BarricadesPerTasks != 0 && opt.BarricadesPerTasks <= ActiveBarricadeTaskCount)
+            {
+                ++button.UsesLeft;
+                ++button.ExtraUses;
+                button.SetUses(button.UsesLeft);
+                ActiveBarricadeTaskCount = 0;
+            }
         }
     }
 

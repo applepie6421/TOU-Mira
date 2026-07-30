@@ -16,8 +16,7 @@ public sealed class TrapperOptions : AbstractRoleOptionGroup<TrapperRole>
     [ModdedNumberOption("TouOptionTrapperMinAmountOfTimeInTrap", 0f, 15f, 0.5f, MiraNumberSuffixes.Seconds)]
     public float MinAmountOfTimeInTrap { get; set; } = 5f;
 
-    [ModdedNumberOption("TouOptionTrapperMaxNumberOfTraps", 1f, 15f, 1f, MiraNumberSuffixes.None, "0")]
-    public float MaxTraps { get; set; } = 5f;
+    public ModdedNumberOption MaxTraps { get; } = new("TouOptionTrapperMaxNumberOfTraps", 5f, -1f, 15f, 1f, "0", "∞", MiraNumberSuffixes.None, "0");
 
     [ModdedNumberOption("TouOptionTrapperTrapSize", 0.05f, 1f, 0.05f, MiraNumberSuffixes.Multiplier, "0.00")]
     public float TrapSize { get; set; } = 0.25f;
@@ -25,9 +24,10 @@ public sealed class TrapperOptions : AbstractRoleOptionGroup<TrapperRole>
     [ModdedToggleOption("TouOptionTrapperTrapsRemovedAfterRound")]
     public bool TrapsRemoveOnNewRound { get; set; } = true;
 
-    public ModdedToggleOption TaskUses { get; } = new("TouOptionTrapperGetUsesFromTasks", false)
+    public ModdedNumberOption TrapsPerTasks { get; } = new("TouOptionTrapperTrapsPerTasks", 0f, 0f, 15f, 1f, "Off", "#", MiraNumberSuffixes.None, "0")
     {
-        Visible = () => !OptionGroupSingleton<TrapperOptions>.Instance.TrapsRemoveOnNewRound
+        Visible = () => OptionGroupSingleton<TrapperOptions>.Instance.MaxTraps != -1 &&
+                        !OptionGroupSingleton<TrapperOptions>.Instance.TrapsRemoveOnNewRound
     };
 
     [ModdedNumberOption("TouOptionTrapperMinimumNumberOfRoles", 1f, 15f)]

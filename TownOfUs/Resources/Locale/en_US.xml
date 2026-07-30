@@ -984,7 +984,7 @@
   <string name="TouOptionLookoutMaxWatches">Initial Players That Can be Watched</string>
   <string name="TouOptionLookoutSeesIndirectAttacks">See Indirect Attacks</string>
   <string name="TouOptionLookoutLoResetOnNewRound">Lookout Watches Reset After Each Round</string>
-  <string name="TouOptionLookoutTaskUses">Get More Uses From Completing Tasks</string>
+  <string name="TouOptionLookoutWatchesPerTasks">Tasks Required For Additional Watch Use</string>
   <!-- Mayor - Crewmate Power -->
   <!-- Mayor Wiki / Description -->
   <string name="TouRoleMayor">Mayor</string>
@@ -1171,7 +1171,7 @@
   <string name="TouOptionPlumberBlockCooldown">Block Cooldown</string>
   <string name="TouOptionPlumberMaxNumberOfBarricades">Initial Number Of Barricades</string>
   <string name="TouOptionPlumberAmountOfRoundsBarricadesLast">Amount Of Rounds Barricades Last</string>
-  <string name="TouOptionPlumberGetMoreFromTasks">Get More Barricades From Completing Tasks</string>
+  <string name="TouOptionPlumberBarricadesPerTasks">Tasks Required For Additional Barricade Use</string>
   <!-- Politician - Crewmate Power -->
   <!-- Politician Wiki / Abilities -->
   <string name="TouRolePolitician">Politician</string>
@@ -1501,7 +1501,7 @@
   <string name="TouOptionSonarArrowUpdateInterval">Arrow Update Interval</string>
   <string name="TouOptionSonarArrowsMakeSoundOnDeath">Trackers Make Sound On Death</string>
   <string name="TouOptionSonarArrowsResetAfterEachRound">Trackers Reset After Each Round</string>
-  <string name="TouOptionSonarTaskUses">Get More Uses From Completing Tasks</string>
+  <string name="TouOptionSonarTracksPerTasks">Tasks Required For Additional Track Use</string>
   <!-- Transporter - Crewmate Support -->
   <!-- Transporter Wiki / Abilities -->
   <string name="TouRoleTransporter">Transporter</string>
@@ -1516,7 +1516,7 @@
   <string name="TouOptionTransporterMaxUses">Initial Uses</string>
   <string name="TouOptionTransporterMoveWithMenu">Move While Using Transport Menu (KB ONLY)</string>
   <string name="TouOptionTransporterCanUseVitals">Can Use Vitals</string>
-  <string name="TouOptionTransporterGetUsesFromTasks">Get More Uses From Completing Tasks</string>
+  <string name="TouOptionTransporterTransportsPerTasks">Tasks Required For Additional Transport Use</string>
   <!-- Transporter Feedback -->
   <string name="TouRoleTransporterYouWereTransported">You were transported!</string>
   <!-- Trapper - Crewmate Investigative -->
@@ -1533,7 +1533,7 @@
   <string name="TouOptionTrapperMaxNumberOfTraps">Initial Number Of Traps</string>
   <string name="TouOptionTrapperTrapSize">Trap Size</string>
   <string name="TouOptionTrapperTrapsRemovedAfterRound">Traps Reset After Each Round</string>
-  <string name="TouOptionTrapperGetUsesFromTasks">Get More Uses From Completing Tasks</string>
+  <string name="TouOptionTrapperTrapsPerTasks">Tasks Required For Additional Trap Use</string>
   <string name="TouOptionTrapperMinimumNumberOfRoles">Minimum Number Of Roles Required To Trigger Trap</string>
   <!-- Trapper Feedback -->
   <string name="TouRoleTrapperMessageTitle">Trapper Report</string>
