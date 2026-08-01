@@ -28,6 +28,9 @@ public sealed class GameMechanicOptions : AbstractOptionGroup
     public ModdedNumberOption PlayerCountWhenVentsDisable { get; set; } = new("Max Players Alive When Vents Disable",
         2f, 1f, 15f, 1f, MiraNumberSuffixes.None, "0.#");
 
+    [ModdedToggleOption("No Meetings In A 1v1")]
+    public bool NoMeetingsInOneVOne { get; set; } = false;
+
     public ModdedToggleOption GhostwalkerFixSabos { get; set; } = new("Ghostwalkers Can Fix Sabotages", false);
 
     [ModdedNumberOption("Temp Save Cooldown Reset", 0f, 15f, 0.5f, MiraNumberSuffixes.Seconds, "0.#")]

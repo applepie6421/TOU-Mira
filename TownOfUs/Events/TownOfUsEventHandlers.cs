@@ -289,6 +289,27 @@ public static class TownOfUsEventHandlers
     }
 
     [RegisterEvent]
+    public static void ReportBodyEventHandler(ReportBodyEvent @event)
+    {
+        var aliveCount = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.HasDied());
+
+        if (!OptionGroupSingleton<GameMechanicOptions>.Instance.NoMeetingsInOneVOne || aliveCount > 2)
+        {
+            return;
+        }
+
+        @event.Cancel();
+
+        if (@event.Reporter.AmOwner)
+        {
+            var notif = Helpers.CreateAndShowNotification(
+                TouLocale.GetParsed("TouNoMeetingsInOneVOne"),
+                Color.white, new Vector3(0f, 1f, -20f));
+            notif.AdjustNotification();
+        }
+    }
+
+    [RegisterEvent]
     public static void StartMeetingEventHandler(StartMeetingEvent _)
     {
         // Reset team chat state when a new meeting starts

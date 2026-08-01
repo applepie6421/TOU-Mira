@@ -351,6 +351,7 @@
   <string name="YouWereAn">You were an</string>
   <string name="YouWereThe">You were the</string>
   <string name="YouWere">You were</string>
+  <string name="TouNoMeetingsInOneVOne">Meetings are disabled with only two players left!</string>
   <!-- Chat Changes -->
   <string name="LoverChatTitle">\%player\% (Lover Chat)</string>
   <string name="ImpostorChatTitle">\%player\% (Impostor Chat)</string>
