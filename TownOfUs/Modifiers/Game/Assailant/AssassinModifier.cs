@@ -25,6 +25,8 @@ public class AssassinModifier : TouGameModifier, IWikiDiscoverable
     public override Color FreeplayFileColor => TownOfUsColors.Overclocker;
     public int maxKills;
     public int defaultKills;
+    public int SafeShotsLeft { get; set; }
+    public int DefaultSafeShots { get; set; }
     private MeetingMenu meetingMenu;
     public override string LocaleKey => "Assassin";
     public static bool HasDoubleShot => PlayerControl.LocalPlayer.HasModifier<DoubleShotModifier>();
@@ -158,6 +160,8 @@ public class AssassinModifier : TouGameModifier, IWikiDiscoverable
         var opts = OptionGroupSingleton<AssassinOptions>.Instance;
         maxKills = IsImpostorAssassin ? (int)opts.ImpAssassinKills.Value : (int)opts.NeutAssassinKills.Value;
         defaultKills = maxKills;
+        SafeShotsLeft = opts.AssassinSafeShots.Value ? (int)opts.AssassinSafeShotAmount.Value : 0;
+        DefaultSafeShots = SafeShotsLeft;
 
         //Error($"AssassinModifier.OnActivate maxKills: {maxKills}");
         if (Player.AmOwner)
@@ -267,6 +271,8 @@ public class AssassinModifier : TouGameModifier, IWikiDiscoverable
 
         bool ClickHandler(PlayerControl victim)
         {
+            var opts = OptionGroupSingleton<AssassinOptions>.Instance;
+
             if (victim.HasDied() || Player.HasDied())
             {
                 return false;
@@ -285,15 +291,16 @@ public class AssassinModifier : TouGameModifier, IWikiDiscoverable
                 return false;
             }
 
-            if (victim == Player && Player.TryGetModifier<DoubleShotModifier>(out var modifier) && !modifier.Used)
+            if (victim == Player && SafeShotsLeft != 0)
             {
-                modifier!.Used = true;
+                SafeShotsLeft--;
+                maxKills--;
 
                 Coroutines.Start(MiscUtils.CoFlash(TownOfUsColors.Impostor));
 
                 var notif1 = Helpers.CreateAndShowNotification(
-                    $"<b>{TownOfUsColors.ImpSoft.ToTextColor()}Your Double Shot has prevented you from dying this meeting!</color></b>",
-                    Color.white, new Vector3(0f, 1f, -20f), spr: TouModifierIcons.DoubleShot.LoadAsset());
+                    $"<b>{TownOfUsColors.ImpSoft.ToTextColor()}Your Safe Shot has prevented you from dying this meeting! You have {SafeShotsLeft} safe shot(s) left!</color></b>",
+                    Color.white, new Vector3(0f, 1f, -20f), spr: TouModifierIcons.Assassin.LoadAsset());
 
                 notif1.AdjustNotification();
 
@@ -301,8 +308,51 @@ public class AssassinModifier : TouGameModifier, IWikiDiscoverable
                 LastGuessedItem = string.Empty;
                 LastAttemptedVictim = null;
 
+                meetingMenu?.HideButtons();
+
                 return false;
             }
+
+            if (victim == Player && Player.TryGetModifier<DoubleShotModifier>(out var modifier) && !modifier.Used)
+            {
+                modifier!.Used = true;
+
+                Coroutines.Start(MiscUtils.CoFlash(TownOfUsColors.Impostor));
+
+                var notif2 = Helpers.CreateAndShowNotification(
+                    $"<b>{TownOfUsColors.ImpSoft.ToTextColor()}Your Double Shot has saved you this meeting!</color></b>",
+                    Color.white, new Vector3(0f, 1f, -20f), spr: TouModifierIcons.DoubleShot.LoadAsset());
+
+                notif2.AdjustNotification();
+
+                shapeMenu.Close();
+                LastGuessedItem = string.Empty;
+                LastAttemptedVictim = null;
+
+                return false;
+            }
+
+            if (victim == Player && opts.AssassinMisguessLocksGuessing.Value)
+            {
+                maxKills = 0;
+
+                Coroutines.Start(MiscUtils.CoFlash(TownOfUsColors.Impostor));
+
+                var notif3 = Helpers.CreateAndShowNotification(
+                    $"<b>{TownOfUsColors.ImpSoft.ToTextColor()}Your misguess has cost you the ability to guess!</color></b>",
+                    Color.white, new Vector3(0f, 1f, -20f), spr: TouModifierIcons.Assassin.LoadAsset());
+
+                notif3.AdjustNotification();
+
+                shapeMenu.Close();
+                LastGuessedItem = string.Empty;
+                LastAttemptedVictim = null;
+
+                meetingMenu?.HideButtons();
+
+                return false;
+            }
+
             Player.RpcMeetingMurder(victim, MeetingAnimation.PlayerNameplateAnimation, CustomTouMurderRpcs.GetRandomMeetingAnim(DeathAnimType.Nameplate),
                 causeOfDeath: victim != Player ? "Guess" : "Misguess");
 
@@ -315,7 +365,6 @@ public class AssassinModifier : TouGameModifier, IWikiDiscoverable
 
             maxKills--;
 
-            var opts = OptionGroupSingleton<AssassinOptions>.Instance;
             if ((!IsImpostorAssassin && !opts.NeutAssassinMultiKill.Value) || (IsImpostorAssassin && !opts.ImpAssassinMultiKill.Value) || maxKills == 0 || victim == Player)
             {
                 meetingMenu?.HideButtons();

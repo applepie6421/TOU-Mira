@@ -69,6 +69,18 @@ public sealed class AssassinOptions : AbstractTouModifierOptionGroup<AssassinMod
             Visible = () => OptionGroupSingleton<AssassinOptions>.Instance.NeutAssassinKills.Value > 1 && OptionGroupSingleton<AssassinOptions>.Instance.NumberOfNeutralAssassins.Value > 0 && OptionGroupSingleton<AssassinOptions>.Instance.NeutAssassinChance.Value > 0
         };
 
+    public ModdedToggleOption AssassinSafeShots { get; } =
+        new("Assassins Have Safe Shots", false);
+
+    public ModdedNumberOption AssassinSafeShotAmount { get; } =
+        new("# Of Assassin Safe Shots", 1, 0, 3, 1, MiraNumberSuffixes.None, "0")
+        {
+            Visible = () => OptionGroupSingleton<AssassinOptions>.Instance.AssassinSafeShots.Value
+        };
+
+    public ModdedToggleOption AssassinMisguessLocksGuessing { get; } =
+        new("Assassin Misguessing Removes Guessing Instead Of Killing", false);
+
     /*
     public ModdedToggleOption GuessVanillaRoles { get; } =
         new("Non-Basic Vanilla Roles Are Guessable", true);*/
@@ -124,6 +136,10 @@ public sealed class AssassinOptions : AbstractTouModifierOptionGroup<AssassinMod
             NeutAssassinMultiKill.StringName,
             ImpAssassinKills.StringName,
             ImpAssassinMultiKill.StringName,
+
+            AssassinSafeShots.StringName,
+            AssassinSafeShotAmount.StringName,
+            AssassinMisguessLocksGuessing.StringName,
 
             // GuessVanillaRoles.StringName,
             AssassinCrewmateGuess.StringName,

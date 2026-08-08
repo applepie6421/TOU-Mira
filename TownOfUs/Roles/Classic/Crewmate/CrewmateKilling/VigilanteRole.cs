@@ -203,6 +203,8 @@ public sealed class VigilanteRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITouCre
             if (victim == Player && SafeShotsLeft != 0)
             {
                 SafeShotsLeft--;
+                MaxKills--;
+
                 Coroutines.Start(MiscUtils.CoFlash(TownOfUsColors.Impostor));
 
                 var notif1 = Helpers.CreateAndShowNotification(
@@ -210,6 +212,23 @@ public sealed class VigilanteRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITouCre
                     Color.white, new Vector3(0f, 1f, -20f), spr: TouRoleIcons.Vigilante.LoadAsset());
 
                 notif1.AdjustNotification();
+
+                shapeMenu.Close();
+
+                return false;
+            }
+
+            if (victim == Player && OptionGroupSingleton<VigilanteOptions>.Instance.MisguessLocksGuessing)
+            {
+                MaxKills = 0;
+
+                Coroutines.Start(MiscUtils.CoFlash(TownOfUsColors.Impostor));
+
+                var notif2 = Helpers.CreateAndShowNotification(
+                    $"<b>{TownOfUsColors.Vigilante.ToTextColor()}{TouLocale.GetParsed("TouRoleVigilanteMisguessLockedOut")}</color></b>",
+                    Color.white, new Vector3(0f, 1f, -20f), spr: TouRoleIcons.Vigilante.LoadAsset());
+
+                notif2.AdjustNotification();
 
                 shapeMenu.Close();
 

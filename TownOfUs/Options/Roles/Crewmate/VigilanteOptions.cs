@@ -33,7 +33,9 @@ public sealed class VigilanteOptions : AbstractRoleOptionGroup<VigilanteRole>, I
 
     [ModdedNumberOption("TouOptionVigilanteSafeShotsAvailable", 0f, 3f, 1f, MiraNumberSuffixes.None, "0")]
     public float MultiShots { get; set; } = 3;
-    
+
+    public ModdedToggleOption MisguessLocksGuessing { get; set; } = new("TouOptionVigilanteMisguessLocksGuessing", false);
+
     public IReadOnlySet<StringNames> WikiHiddenOptionKeys =>
         new HashSet<StringNames>
         {

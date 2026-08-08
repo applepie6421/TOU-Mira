@@ -1597,6 +1597,7 @@
   <string name="TouRoleVigilanteNoSafeShots">You have no more safe shots left.</string>
   <string name="TouRoleVigilanteSafeShotsLeft">\%count\% safe shot(s) left.</string>
   <string name="TouRoleVigilanteMultiShotFeedback">Your Multi-Shot has prevented you from dying this meeting! You have \%count\% safe shot(s) left!</string>
+  <string name="TouRoleVigilanteMisguessLockedOut">Your misguess has cost you the ability to guess!</string>
   <string name="TouRoleVigilanteWikiDescription">The Vigilante is a Crewmate Killing role that can guess roles of players in meetings. If they guess correctly, the other player will die. If not, they will die. </string>
   <!-- Vigilante Options -->
   <string name="TouOptionVigilanteNumberOfGuesses">Number Of Guesses</string>
@@ -1614,6 +1615,7 @@
   <string name="TouOptionVigilanteCanGuessKillerModifiers">Can Guess Killer Modifiers</string>
   <string name="TouOptionVigilanteCanGuessAlliances">Can Guess Alliance Modifiers</string>
   <string name="TouOptionVigilanteSafeShotsAvailable">Safe Shots Available</string>
+  <string name="TouOptionVigilanteMisguessLocksGuessing">Misguessing Removes Guessing Instead Of Killing You</string>
   <!-- Warden - Crewmate Protective -->
   <!-- Warden Wiki / Abilities -->
   <string name="TouRoleWarden">Warden</string>

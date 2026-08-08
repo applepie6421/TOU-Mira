@@ -83,6 +83,12 @@ public static class MeetingHudTimerPatch
         {
             newText +=
                 $"\n{assassinMod.maxKills} / {assassinMod.defaultKills} Guesses Remaining";
+            if (assassinMod.DefaultSafeShots > 0)
+            {
+                newText +=
+                    $" | {assassinMod.SafeShotsLeft} / {assassinMod.DefaultSafeShots} Safe Shots";
+            }
+
             if ((PlayerControl.LocalPlayer.TryGetModifier<DoubleShotModifier>(out var doubleShotMod)))
             {
                 newText += (doubleShotMod.Used) ? " | Double Shot Used" : " | Double Shot Available";
