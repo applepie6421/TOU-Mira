@@ -8,6 +8,7 @@ using MiraAPI.Modifiers;
 using MiraAPI.Patches.Stubs;
 using MiraAPI.Roles;
 using Reactor.Utilities;
+using TMPro;
 using TownOfUs.Modifiers;
 using TownOfUs.Modifiers.Game.Alliance;
 using TownOfUs.Modifiers.Game.Assailant;
@@ -21,6 +22,9 @@ namespace TownOfUs.Roles.Impostor;
 public sealed class ScavengerRole(IntPtr cppPtr)
     : ImpostorRole(cppPtr), ITownOfUsRole, IWikiDiscoverable, IDoomable, ICrewVariant
 {
+    private GameObject timerCounter;
+    private TextMeshPro timerText;
+
     public bool GameStarted { get; set; }
     public float TimeRemaining { get; set; }
     [HideFromIl2Cpp] public PlayerControl? Target { get; set; }
@@ -93,6 +97,53 @@ public sealed class ScavengerRole(IntPtr cppPtr)
             // Message($"Scavenge End");
             Player.SetKillTimer(PlayerControl.LocalPlayer.GetKillCooldown());
         }
+
+        UpdateKillButtonTimer();
+    }
+
+    private void UpdateKillButtonTimer()
+    {
+        if (!Player || !Player.AmOwner || !HudManager.InstanceExists)
+        {
+            return;
+        }
+
+        var button = HudManager.Instance.KillButton;
+
+        if (!button)
+        {
+            return;
+        }
+
+        if (!timerCounter)
+        {
+            timerCounter = button.CreateAbilityCounter("ScavengeTimer");
+
+            var sprite = timerCounter.GetComponent<SpriteRenderer>();
+            sprite.sprite = LegacyAssets.IsLegacy ? TouAssets.BlankSprite.LoadAsset() : TouAssets.AbilityCounterPlayerSprite.LoadAsset();
+            sprite.color = TownOfUsColors.Impostor;
+        }
+
+        if (!timerText)
+        {
+            timerText = timerCounter.GetComponentInChildren<TextMeshPro>(true);
+        }
+
+        var show = Scavenging && Target != null;
+
+        timerCounter.SetActive(show);
+
+        if (!timerText)
+        {
+            return;
+        }
+
+        timerText.gameObject.SetActive(show);
+
+        if (show)
+        {
+            timerText.text = (int)TimeRemaining + "<size=80%>s</size>";
+        }
     }
 
     public RoleBehaviour CrewVariant => RoleManager.Instance.GetRole((RoleTypes)RoleId.Get<InvestigatorRole>());
@@ -128,7 +179,6 @@ public sealed class ScavengerRole(IntPtr cppPtr)
 
         if (Target != null && Scavenging)
         {
-            stringB.Append(TownOfUsPlugin.Culture, $"\n<b>{TimerString.Replace("<timeLeft>", TimeRemaining.ToString("0", TownOfUsPlugin.Culture))}</b>");
             stringB.Append(TownOfUsPlugin.Culture, $"\n<b>{TargetString.Replace("<player>", Target.Data.PlayerName)}</b>");
         }
 
@@ -144,12 +194,10 @@ public sealed class ScavengerRole(IntPtr cppPtr)
         Clear();
     }
 
-    public static string TimerString = TouLocale.GetParsed("TouRoleScavengerTabTimer");
     public static string TargetString = TouLocale.GetParsed("TouRoleScavengerTabTarget");
     public override void Initialize(PlayerControl player)
     {
         RoleBehaviourStubs.Initialize(this, player);
-        TimerString = TouLocale.GetParsed("TouRoleScavengerTabTimer");
         TargetString = TouLocale.GetParsed("TouRoleScavengerTabTarget");
         if (TutorialManager.InstanceExists && Target == null && Player.AmOwner)
         {
@@ -200,6 +248,8 @@ public sealed class ScavengerRole(IntPtr cppPtr)
         Scavenging = false;
         TimeRemaining = 0;
         Target = null;
+
+        UpdateKillButtonTimer();
     }
 
     public void OnPlayerKilled(PlayerControl victim)

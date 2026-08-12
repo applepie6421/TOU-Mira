@@ -712,6 +712,14 @@ public static class Extensions
         }
     }
 
+    public static GameObject CreateAbilityCounter(this ActionButton button, string name)
+    {
+        var counter = Object.Instantiate(HudManager.Instance.AbilityButton.usesRemainingSprite.gameObject, button.transform);
+        counter.name = name;
+        counter.transform.localPosition = new Vector3(-0.341f, 0.45f, -0.1f);
+        return counter;
+    }
+
     public static void FillWhere<T>(this List<T> source, List<T> destination, System.Predicate<T> match)
     {
         destination.Clear(); // Clear the reusable list
