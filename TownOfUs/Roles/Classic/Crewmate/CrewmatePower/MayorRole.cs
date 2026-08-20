@@ -131,7 +131,7 @@ public sealed class MayorRole(IntPtr cppPtr)
             // Message($"PoliticianRole.OnMeetingStart '{Player.Data.PlayerName}' {Player.AmOwner && !Player.HasDied() && !Player.HasModifier<JailedModifier>()}");
         {
             meetingMenu.GenButtons(meeting,
-                Player.AmOwner && !Player.HasDied() && !Player.HasModifier<JailedModifier>());
+                Player.AmOwner && !Player.HasDied() && !Player.HasModifier<JailedModifier>() && !Player.AreAbilitiesBlockedByComms());
         }
     }
 

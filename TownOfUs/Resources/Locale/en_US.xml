@@ -539,6 +539,7 @@ You may disable this message through your option menu.</string>
   <string name="TouOptionAdvancedSaboCamouflageComms">Camouflage Comms</string>
   <string name="TouOptionAdvancedSaboGlobalCamouflageComms">Toggle Camouflage Comms</string>
   <string name="TouOptionAdvancedSaboKillDuringCamoComms">Kill Anyone During Camouflage</string>
+  <string name="TouOptionAdvancedSaboCommsDisablesCrewAbilities">Comms Sabotage Disables Crew Abilities</string>
   <string name="TouOptionAdvancedSaboCamoKillScreens">Camouflage Kill Screens During Comms</string>
   <string name="TouOptionAdvancedSaboHidePlayerSizeInCamo">Camouflage Hides Player Size</string>
   <string name="TouOptionAdvancedSaboHidePlayerSpeedInCamo">Camouflage Hides Player Speed</string>

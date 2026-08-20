@@ -207,7 +207,7 @@ public abstract class TownOfUsButton : CustomActionButton
             return false;
         }
 
-        if (!PlayerControl.LocalPlayer.CanMove ||
+        if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.AreAbilitiesBlockedByComms() ||
             PlayerControl.LocalPlayer.GetModifiers<DisabledModifier>().Any(x => !x.CanUseAbilities))
         {
             return false;
@@ -406,7 +406,7 @@ public abstract class TownOfUsTargetButton<T> : CustomActionButton<T> where T : 
             return false;
         }
 
-        if (!PlayerControl.LocalPlayer.CanMove ||
+        if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.AreAbilitiesBlockedByComms() ||
             PlayerControl.LocalPlayer.GetModifiers<DisabledModifier>().Any(x => !x.CanUseAbilities))
         {
             return false;
@@ -662,7 +662,8 @@ public abstract class TownOfUsVentRoleButton<TRole> : TownOfUsRoleButton<TRole, 
             return false;
         }
 
-        if (PlayerControl.LocalPlayer.GetModifiers<DisabledModifier>().Any(x => !x.CanUseAbilities))
+        if (PlayerControl.LocalPlayer.AreAbilitiesBlockedByComms() ||
+            PlayerControl.LocalPlayer.GetModifiers<DisabledModifier>().Any(x => !x.CanUseAbilities))
         {
             return false;
         }

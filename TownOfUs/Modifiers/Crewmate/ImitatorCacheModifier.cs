@@ -82,7 +82,7 @@ public sealed class ImitatorCacheModifier : BaseModifier, ICachedRole, IContinue
         {
             // _selectedPlr = null;
             _meetingMenu!.GenButtons(meeting,
-                Player.AmOwner && !Player.HasDied() && !Player.HasModifier<JailedModifier>());
+                Player.AmOwner && !Player.HasDied() && !Player.HasModifier<JailedModifier>() && !Player.AreAbilitiesBlockedByComms());
             if (_selectedPlr != null)
             {
                 _meetingMenu!.Actives[_selectedPlr.PlayerId] = true;

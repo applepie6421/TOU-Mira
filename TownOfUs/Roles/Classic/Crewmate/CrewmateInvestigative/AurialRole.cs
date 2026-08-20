@@ -145,7 +145,7 @@ public sealed class AurialRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsR
             return;
         }
 
-        if (player.AmOwner)
+        if (player.AmOwner && !player.AreAbilitiesBlockedByComms())
         {
             Coroutines.Start(aurial.Sense(source));
         }

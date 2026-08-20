@@ -11,7 +11,7 @@ public static class MysticEvents
     [RegisterEvent]
     public static void AfterMurderEventHandler(AfterMurderEvent @event)
     {
-        if (MeetingHud.Instance)
+        if (MeetingHud.Instance || PlayerControl.LocalPlayer.AreAbilitiesBlockedByComms())
         {
             return;
         }

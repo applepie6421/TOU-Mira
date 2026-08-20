@@ -1935,6 +1935,12 @@ public static class MiscUtils
         return false;
     }
 
+    public static bool AreAbilitiesBlockedByComms(this PlayerControl player)
+    {
+        return OptionGroupSingleton<AdvancedSabotageOptions>.Instance.CommsDisablesCrewAbilities &&
+               !TownOfUsMapOptions.IsCamoCommsOn() && player.IsCrewmate() && player.AreCommsAffected();
+    }
+
     public static bool CanUseVent(this PlayerControl player, Vent vent)
     {
         var couldUse = (!player.MustCleanVent(vent.Id) || (player.inVent && Vent.currentVent == vent)) &&

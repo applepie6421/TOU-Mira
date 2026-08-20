@@ -44,7 +44,12 @@ public sealed class SnitchRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITownOfUsR
 
         if (_snitchArrows != null && _snitchArrows.Count > 0 && Player.AmOwner)
         {
-            _snitchArrows.ToList().ForEach(arrow => arrow.Value.target = arrow.Value.transform.parent.position);
+            var blocked = Player.AreAbilitiesBlockedByComms();
+            _snitchArrows.ToList().ForEach(arrow =>
+            {
+                arrow.Value.gameObject.SetActive(!blocked);
+                arrow.Value.target = arrow.Value.transform.parent.position;
+            });
         }
     }
 

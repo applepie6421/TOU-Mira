@@ -102,7 +102,7 @@ public sealed class VigilanteRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITouCre
         if (Player.AmOwner && meeting != null)
         {
             meetingMenu.GenButtons(meeting,
-                Player.AmOwner && !Player.HasDied() && MaxKills > 0 && !Player.HasModifier<JailedModifier>());
+                Player.AmOwner && !Player.HasDied() && MaxKills > 0 && !Player.HasModifier<JailedModifier>() && !Player.AreAbilitiesBlockedByComms());
         }
     }
 

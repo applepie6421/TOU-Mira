@@ -12,6 +12,12 @@ public sealed class AdvancedSabotageOptions : AbstractOptionGroup
     public override Color GroupColor => new Color32(173, 180, 179, 255);
     public ModdedToggleOption KillDuringCamoComms { get; set; } = new("TouOptionAdvancedSaboKillDuringCamoComms", true);
 
+    public ModdedToggleOption CommsDisablesCrewAbilities { get; set; } =
+        new("TouOptionAdvancedSaboCommsDisablesCrewAbilities", false)
+        {
+            Visible = () => !TownOfUsMapOptions.IsCamoCommsOn()
+        };
+
     public ModdedToggleOption CamoKillScreens { get; set; } = new("TouOptionAdvancedSaboCamoKillScreens", false);
 
     public ModdedToggleOption HidePlayerSizeInCamo { get; set; } = new("TouOptionAdvancedSaboHidePlayerSizeInCamo", false);

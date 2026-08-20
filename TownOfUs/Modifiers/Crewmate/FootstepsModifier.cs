@@ -54,6 +54,7 @@ public sealed class FootstepsModifier : BaseModifier
     public override void FixedUpdate()
     {
         var cantContinue = _currentSteps == null || Player.AmOwner ||
+                           PlayerControl.LocalPlayer.AreAbilitiesBlockedByComms() ||
                            PlayerControl.LocalPlayer.GetModifiers<HypnotisedModifier>().Any(x => x.HysteriaActive) ||
                            !Player.IsVisibleToOthers();
         if (CheckDistance)

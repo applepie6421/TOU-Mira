@@ -47,7 +47,7 @@ public sealed class MonarchKnightButton : TownOfUsRoleButton<MonarchRole, Player
             return false;
         }
 
-        if (!PlayerControl.LocalPlayer.CanMove ||
+        if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.AreAbilitiesBlockedByComms() ||
             PlayerControl.LocalPlayer.GetModifiers<DisabledModifier>().Any(x => !x.CanUseAbilities))
         {
             return false;

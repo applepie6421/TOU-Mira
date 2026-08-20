@@ -48,7 +48,7 @@ public sealed class ProsecutorRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITouCr
         }
 
         ProsecuteButton.gameObject.SetActive(!HideProsButton && meeting.state == MeetingHud.MeetingStates.NotVoted &&
-                                             !SelectingProsecuteVictim);
+                                             !SelectingProsecuteVictim && !Player.AreAbilitiesBlockedByComms());
 
         if (!ProsecuteButton.gameObject.active)
         {

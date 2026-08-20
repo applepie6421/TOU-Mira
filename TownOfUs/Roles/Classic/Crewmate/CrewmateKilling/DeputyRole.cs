@@ -238,7 +238,7 @@ public sealed class DeputyRole(IntPtr cppPtr) : CrewmateRole(cppPtr), ITouCrewRo
         if (Player.AmOwner && meeting != null)
         {
             meetingMenu.GenButtons(meeting,
-                Player.AmOwner && !Player.HasDied() && Killer != null && !Player.HasModifier<JailedModifier>());
+                Player.AmOwner && !Player.HasDied() && Killer != null && !Player.HasModifier<JailedModifier>() && !Player.AreAbilitiesBlockedByComms());
         }
     }
 
