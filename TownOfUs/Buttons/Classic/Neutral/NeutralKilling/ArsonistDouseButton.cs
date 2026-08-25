@@ -2,6 +2,7 @@ using System.Collections;
 using MiraAPI.GameOptions;
 using MiraAPI.Hud;
 using MiraAPI.Modifiers;
+using MiraAPI.Utilities;
 using Reactor.Utilities;
 using TownOfUs.Modifiers.Neutral;
 using TownOfUs.Options.Modifiers.Alliance;
@@ -64,7 +65,8 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
             return;
         }
 
-        if (!_dousing.HasDied() && Vector2.Distance(playerControl.GetTruePosition(), _dousing.GetTruePosition()) <= Distance)
+        if (!playerControl.HasDied() && !_dousing.HasDied() &&
+            Helpers.GetClosestPlayers(playerControl, Distance).Any(x => x.PlayerId == _dousing.PlayerId))
         {
             return;
         }
