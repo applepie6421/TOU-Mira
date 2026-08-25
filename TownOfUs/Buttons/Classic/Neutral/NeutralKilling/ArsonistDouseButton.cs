@@ -7,6 +7,7 @@ using TownOfUs.Modifiers.Neutral;
 using TownOfUs.Options.Modifiers.Alliance;
 using TownOfUs.Options.Roles.Neutral;
 using TownOfUs.Roles.Neutral;
+using TownOfUs.Utilities;
 using UnityEngine;
 
 namespace TownOfUs.Buttons.Neutral;
@@ -20,6 +21,13 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
     public override int MaxUses => (int)OptionGroupSingleton<ArsonistOptions>.Instance.DouseUses.Value;
     public override bool ZeroIsInfinite => true;
     public override LoadableAsset<Sprite> Sprite => LegacyAssets.IsLegacy ? LegacyNeutAssets.DouseButtonSprite : TouNeutAssets.DouseButtonSprite;
+    public override bool HasEffect => DouseDuration > 0f;
+    public override float EffectDuration => DouseDuration;
+
+    private static float DouseDuration => OptionGroupSingleton<ArsonistOptions>.Instance.DouseDuration.Value;
+
+    private PlayerControl? _dousing;
+    private bool _refundApplied;
 
     protected override void OnClick()
     {
@@ -29,7 +37,59 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
             return;
         }
 
-        Target.RpcAddModifier<ArsonistDousedModifier>(PlayerControl.LocalPlayer.PlayerId);
+        _dousing = Target;
+        _refundApplied = false;
+
+        if (!HasEffect)
+        {
+            Douse();
+            _dousing = null;
+        }
+    }
+
+    // the douse only lands once the arsonist has stayed with them
+    public override void OnEffectEnd()
+    {
+        base.OnEffectEnd();
+
+        if (_dousing != null)
+        {
+            Douse();
+        }
+
+        _dousing = null;
+    }
+
+    protected override void FixedUpdate(PlayerControl playerControl)
+    {
+        base.FixedUpdate(playerControl);
+
+        if (!EffectActive || _dousing == null)
+        {
+            return;
+        }
+
+        if (!_dousing.HasDied() && Vector2.Distance(playerControl.GetTruePosition(), _dousing.GetTruePosition()) <= Distance)
+        {
+            return;
+        }
+
+        // the target got away, so the douse costs nothing
+        if (LimitedUses && !_refundApplied)
+        {
+            _refundApplied = true;
+            UsesLeft++;
+            SetUses(UsesLeft);
+        }
+
+        _dousing = null;
+        EffectActive = false;
+        Timer = 0f;
+    }
+
+    private void Douse()
+    {
+        _dousing!.RpcAddModifier<ArsonistDousedModifier>(PlayerControl.LocalPlayer.PlayerId);
 
         CustomButtonSingleton<ArsonistIgniteButton>.Instance.SetTimer(CustomButtonSingleton<ArsonistIgniteButton>
             .Instance.Cooldown);

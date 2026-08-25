@@ -20,6 +20,12 @@ public sealed class ArsonistOptions : AbstractRoleOptionGroup<ArsonistRole>
     [ModdedToggleOption("TouOptionArsonistLegacyMode")]
     public bool LegacyArsonist { get; set; } = true;
 
+    public ModdedNumberOption DouseDuration { get; set; } = new("TouOptionArsonistDouseDuration", 0f, 0f, 2.5f, 0.5f,
+        MiraNumberSuffixes.Seconds, "0.0")
+    {
+        Visible = () => OptionGroupSingleton<ArsonistOptions>.Instance.LegacyArsonist
+    };
+
     public ModdedNumberOption IgniteRadius { get; set; } = new("TouOptionArsonistIgniteRadius", 0.25f, 0.05f, 1f, 0.05f,
         MiraNumberSuffixes.Multiplier, "0.00")
     {

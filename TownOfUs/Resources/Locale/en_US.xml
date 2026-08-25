@@ -2130,6 +2130,7 @@ You will slow down players around you in a radius, as well as being fast and hid
   <string name="TouOptionArsonistDouseUses">Douses Possible at Once</string>
   <string name="TouOptionArsonistDouseInteractions">Douse From Interactions</string>
   <string name="TouOptionArsonistLegacyMode">Legacy Mode (No Radius)</string>
+  <string name="TouOptionArsonistDouseDuration">Douse Duration</string>
   <string name="TouOptionArsonistIgniteRadius">Ignite Radius</string>
   <string name="TouOptionArsonistCanVent">Arsonist Can Vent</string>
   <string name="TouOptionArsonistImpVision">Has Impostor Vision</string>
