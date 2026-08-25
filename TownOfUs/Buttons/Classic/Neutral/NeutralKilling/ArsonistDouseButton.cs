@@ -27,7 +27,6 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
     private static float DouseDuration => OptionGroupSingleton<ArsonistOptions>.Instance.DouseDuration.Value;
 
     private PlayerControl? _dousing;
-    private bool _refundApplied;
 
     protected override void OnClick()
     {
@@ -38,7 +37,6 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
         }
 
         _dousing = Target;
-        _refundApplied = false;
 
         if (!HasEffect)
         {
@@ -47,11 +45,8 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
         }
     }
 
-    // the douse only lands once the arsonist has stayed with them
     public override void OnEffectEnd()
     {
-        base.OnEffectEnd();
-
         if (_dousing != null)
         {
             Douse();
@@ -74,10 +69,8 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
             return;
         }
 
-        // the target got away, so the douse costs nothing
-        if (LimitedUses && !_refundApplied)
+        if (LimitedUses)
         {
-            _refundApplied = true;
             UsesLeft++;
             SetUses(UsesLeft);
         }
