@@ -2,13 +2,11 @@ using System.Collections;
 using MiraAPI.GameOptions;
 using MiraAPI.Hud;
 using MiraAPI.Modifiers;
-using MiraAPI.Utilities;
 using Reactor.Utilities;
 using TownOfUs.Modifiers.Neutral;
 using TownOfUs.Options.Modifiers.Alliance;
 using TownOfUs.Options.Roles.Neutral;
 using TownOfUs.Roles.Neutral;
-using TownOfUs.Utilities;
 using UnityEngine;
 
 namespace TownOfUs.Buttons.Neutral;
@@ -41,18 +39,16 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
 
         if (!HasEffect)
         {
-            Douse();
+            Douse(Target);
             _dousing = null;
         }
     }
 
     public override void OnEffectEnd()
     {
-        if (_dousing != null)
-        {
-            Douse();
-        }
+        if (_dousing == null) return;
 
+        Douse(_dousing);
         _dousing = null;
     }
 
@@ -60,13 +56,15 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
     {
         base.FixedUpdate(playerControl);
 
-        if (!EffectActive || _dousing == null)
+        var dousing = _dousing;
+
+        if (!EffectActive || dousing == null)
         {
             return;
         }
 
-        if (!playerControl.HasDied() && !_dousing.HasDied() &&
-            Helpers.GetClosestPlayers(playerControl, Distance).Any(x => x.PlayerId == _dousing.PlayerId))
+        if (!playerControl.HasDied() &&
+            playerControl.GetClosestLivingPlayer(true, Distance, predicate: x => x.PlayerId == dousing.PlayerId) != null)
         {
             return;
         }
@@ -82,9 +80,9 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
         Timer = 0f;
     }
 
-    private void Douse()
+    private void Douse(PlayerControl target)
     {
-        _dousing!.RpcAddModifier<ArsonistDousedModifier>(PlayerControl.LocalPlayer.PlayerId);
+        target.RpcAddModifier<ArsonistDousedModifier>(PlayerControl.LocalPlayer.PlayerId);
 
         CustomButtonSingleton<ArsonistIgniteButton>.Instance.SetTimer(CustomButtonSingleton<ArsonistIgniteButton>
             .Instance.Cooldown);
