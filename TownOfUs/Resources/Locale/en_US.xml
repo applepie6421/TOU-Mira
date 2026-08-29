@@ -2429,6 +2429,7 @@ then bribe the winners!</string>
   <string name="TownOfUsMira.Role.Vampire.WikiDescription">The Vampire is a Neutral Killing role that wins by being the last killer(s) alive. They can bite, changing others into Vampires, or kill players.</string>
   <string name="TownOfUsMira.Role.VampireBite">Bite</string>
   <string name="TownOfUsMira.Role.VampireBite.WikiDescription">Bite a player. If the bitten player is convertible, and you have not exceeded the maximum number of vampires in a game yet, you convert them into a vampire. Otherwise, they will just die.</string>
+  <string name="TownOfUsMira.Role.VampireEldestNotif">[player] has died. You are now the eldest Vampire!</string>
   <!-- Vampire Options -->
   <string name="TouOptionVampireBiteCooldown">Bite Cooldown</string>
   <string name="TouOptionVampireMaxVamps">Max Number Of Vampires Per Game</string>
@@ -2444,6 +2445,7 @@ then bribe the winners!</string>
   <string name="TouOptionVampireConvertNeutralOutlier">Can Convert Neutral Outlier Roles</string>
   <string name="TouOptionVampireConvertLovers">Can Convert Lovers</string>
   <string name="TouOptionVampireNewVampiresConvert">New Vampires Can Convert</string>
+  <string name="TouOptionVampireEldestOnly">Only Eldest Vampire Can Act</string>
   <string name="TouOptionVampireCanVent">Vampires Can Vent</string>
   <!-- Werewolf -->
   <!-- Werewolf Wiki / Abilities -->

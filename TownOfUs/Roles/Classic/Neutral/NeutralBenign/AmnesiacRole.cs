@@ -198,15 +198,15 @@ public sealed class AmnesiacRole(IntPtr cppPtr)
         }
         else if (player.Data.Role is VampireRole)
         {
-            if (target.HasModifier<VampireBittenModifier>())
+            if (target.TryGetModifier<VampireBittenModifier>(out var bitten))
             {
                 // Makes the amne stay with the bitten modifier
-                player.AddModifier<VampireBittenModifier>();
+                player.AddModifier<VampireBittenModifier>(bitten.SireId);
             }
             else
             {
                 // Makes the og vampire a bitten vampire so to speak, yes it makes it more confusing, but that's how it is, deal with it - Atony
-                target.AddModifier<VampireBittenModifier>();
+                target.AddModifier<VampireBittenModifier>(player.PlayerId);
             }
         }
 

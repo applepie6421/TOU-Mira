@@ -51,7 +51,27 @@ public sealed class VampireBiteButton : TownOfUsKillRoleButton<VampireRole, Play
 
         OverrideName(canBite ? _biteName : _killName);
 
+        if (options.EldestVampireOnly && !MeetingHud.Instance)
+        {
+            Button?.ToggleVisible(CanAct() && !playerControl.HasDied());
+        }
+
         base.FixedUpdate(playerControl);
+    }
+
+    public override void SetActive(bool visible, RoleBehaviour role)
+    {
+        base.SetActive(visible && CanAct(), role);
+    }
+
+    public override bool CanUse()
+    {
+        return base.CanUse() && CanAct();
+    }
+
+    private static bool CanAct()
+    {
+        return !OptionGroupSingleton<VampireOptions>.Instance.EldestVampireOnly || VampireRole.IsEldest(PlayerControl.LocalPlayer);
     }
 
     public override bool IsTargetValid(PlayerControl? target)

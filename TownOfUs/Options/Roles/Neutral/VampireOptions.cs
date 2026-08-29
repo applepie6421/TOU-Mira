@@ -30,6 +30,9 @@ public sealed class VampireOptions : AbstractRoleOptionGroup<VampireRole>, IWiki
     [ModdedToggleOption("TouOptionVampireNewVampiresConvert")]
     public bool CanConvertAsNewVamp { get; set; } = true;
 
+    [ModdedToggleOption("TouOptionVampireEldestOnly")]
+    public bool EldestVampireOnly { get; set; }
+
     [ModdedToggleOption("TouOptionVampireCanVent")]
     public bool CanVent { get; set; } = true;
 

@@ -131,6 +131,18 @@ public sealed class VampireRole(IntPtr cppPtr) : NeutralRole(cppPtr), ITownOfUsR
         return WinConditionMet();
     }
 
+    public static bool IsEldest(PlayerControl player)
+    {
+        if (!player.TryGetModifier<VampireBittenModifier>(out var bitten))
+        {
+            return true;
+        }
+
+        var sire = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == bitten.SireId);
+
+        return sire == null || sire.HasDied() || !sire.IsRole<VampireRole>();
+    }
+
     [MethodRpc((uint)TownOfUsRpc.VampireBite)]
     public static void RpcVampireBite(PlayerControl player, PlayerControl target)
     {
@@ -149,7 +161,7 @@ public sealed class VampireRole(IntPtr cppPtr) : NeutralRole(cppPtr), ITownOfUsR
         MiraEventManager.InvokeEvent(touAbilityEvent);
 
         target.ChangeRole(RoleId.Get<VampireRole>());
-        target.AddModifier<VampireBittenModifier>();
+        target.AddModifier<VampireBittenModifier>(player.PlayerId);
 
         if (OptionGroupSingleton<VampireOptions>.Instance.CanGuessAsNewVamp)
         {
