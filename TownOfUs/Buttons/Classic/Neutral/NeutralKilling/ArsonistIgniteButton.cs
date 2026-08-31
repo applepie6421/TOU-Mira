@@ -23,41 +23,40 @@ public sealed class ArsonistIgniteButton : TownOfUsRoleButton<ArsonistRole>, ILe
     public override float Cooldown => Math.Clamp(OptionGroupSingleton<ArsonistOptions>.Instance.DouseCooldown + MapCooldown, 5f, 120f);
     public override LoadableAsset<Sprite> Sprite => LegacyAssets.IsLegacy ? LegacyNeutAssets.IgniteButtonSprite : TouNeutAssets.IgniteButtonSprite;
 
-    private static List<PlayerControl> PlayersInRange => Helpers.GetClosestPlayers(PlayerControl.LocalPlayer,
-        OptionGroupSingleton<ArsonistOptions>.Instance.IgniteRadius.Value * ShipStatus.Instance.MaxLightRadius);
+    private List<PlayerControl> PlayersInRange => ClosestTarget == null
+        ? []
+        : Helpers.GetClosestPlayers(ClosestTarget,
+            OptionGroupSingleton<ArsonistOptions>.Instance.IgniteRadius.Value * ShipStatus.Instance.MaxLightRadius,
+            ignoreSource: false);
 
     [HideFromIl2Cpp] public Ignite? Ignite { get; set; }
 
     public override bool CanUse()
     {
-        if (OptionGroupSingleton<ArsonistOptions>.Instance.LegacyArsonist)
+        if (!OptionGroupSingleton<ArsonistOptions>.Instance.LegacyArsonist)
         {
-            return base.CanUse() && ClosestTarget != null;
-        }
-
-        var count = PlayersInRange.Count(x => x.HasModifier<ArsonistDousedModifier>());
-
-        if (count > 0 && !PlayerControl.LocalPlayer.HasDied() && Timer <= 0)
-        {
-            var pos = PlayerControl.LocalPlayer.transform.position;
-            pos.z += 0.001f;
-
-            if (Ignite == null)
+            if (ClosestTarget != null && !PlayerControl.LocalPlayer.HasDied() && Timer <= 0)
             {
-                Ignite = Ignite.CreateIgnite(pos);
+                var pos = ClosestTarget.transform.position;
+                pos.z += 0.001f;
+
+                if (Ignite == null)
+                {
+                    Ignite = Ignite.CreateIgnite(pos);
+                }
+                else
+                {
+                    Ignite.Transform.localPosition = pos;
+                }
             }
             else
             {
-                Ignite.Transform.localPosition = pos;
+                Ignite?.Clear();
+                Ignite = null;
             }
         }
-        else
-        {
-            Ignite?.Clear();
-            Ignite = null;
-        }
 
-        return base.CanUse() && count > 0;
+        return base.CanUse() && ClosestTarget != null;
     }
 
     protected override void OnClick()
@@ -82,7 +81,7 @@ public sealed class ArsonistIgniteButton : TownOfUsRoleButton<ArsonistRole>, ILe
     protected override void FixedUpdate(PlayerControl playerControl)
     {
         base.FixedUpdate(playerControl);
-        if (MeetingHud.Instance || !OptionGroupSingleton<ArsonistOptions>.Instance.LegacyArsonist)
+        if (MeetingHud.Instance)
         {
             return;
         }
