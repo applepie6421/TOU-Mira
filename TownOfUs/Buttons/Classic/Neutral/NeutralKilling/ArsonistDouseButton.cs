@@ -20,7 +20,7 @@ public sealed class ArsonistDouseButton : TownOfUsRoleButton<ArsonistRole, Playe
     public override int MaxUses => (int)OptionGroupSingleton<ArsonistOptions>.Instance.DouseUses.Value;
     public override bool ZeroIsInfinite => true;
     public override LoadableAsset<Sprite> Sprite => LegacyAssets.IsLegacy ? LegacyNeutAssets.DouseButtonSprite : TouNeutAssets.DouseButtonSprite;
-    public override bool HasEffect => DouseDuration > 0f;
+    public override bool HasEffect => OptionGroupSingleton<ArsonistOptions>.Instance.LegacyArsonist && DouseDuration > 0f;
     public override float EffectDuration => DouseDuration;
 
     private static float DouseDuration => OptionGroupSingleton<ArsonistOptions>.Instance.DouseDuration.Value;
