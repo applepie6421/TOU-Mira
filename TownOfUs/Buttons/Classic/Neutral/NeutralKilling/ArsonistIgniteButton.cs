@@ -1,4 +1,3 @@
-using AmongUs.GameOptions;
 using Il2CppInterop.Runtime.Attributes;
 using MiraAPI.GameOptions;
 using MiraAPI.Hud;
@@ -22,6 +21,8 @@ public sealed class ArsonistIgniteButton : TownOfUsRoleButton<ArsonistRole>, ILe
     public override Color TextOutlineColor => TownOfUsColors.Arsonist;
     public override float Cooldown => Math.Clamp(OptionGroupSingleton<ArsonistOptions>.Instance.DouseCooldown + MapCooldown, 5f, 120f);
     public override LoadableAsset<Sprite> Sprite => LegacyAssets.IsLegacy ? LegacyNeutAssets.IgniteButtonSprite : TouNeutAssets.IgniteButtonSprite;
+
+    private static float Distance => PlayerControl.LocalPlayer.Data.Role.GetAbilityDistance();
 
     private List<PlayerControl> PlayersInRange => ClosestTarget == null
         ? []
@@ -86,10 +87,7 @@ public sealed class ArsonistIgniteButton : TownOfUsRoleButton<ArsonistRole>, ILe
             return;
         }
 
-        var killDistances =
-            GameOptionsManager.Instance.currentNormalGameOptions.GetFloatArray(FloatArrayOptionNames.KillDistances);
-        ClosestTarget = PlayerControl.LocalPlayer.GetClosestLivingPlayer(true,
-            killDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance],
+        ClosestTarget = PlayerControl.LocalPlayer.GetClosestLivingPlayer(true, Distance,
             predicate: x => x.HasModifier<ArsonistDousedModifier>());
     }
 }
