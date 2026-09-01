@@ -2,6 +2,7 @@
 using MiraAPI.Hud;
 using MiraAPI.Utilities;
 using TownOfUs.Options.Roles.Neutral;
+using TownOfUs.Patches.Options;
 using TownOfUs.Roles.Neutral;
 using UnityEngine;
 
@@ -39,7 +40,7 @@ public sealed class ChefCookButton : TownOfUsRoleButton<ChefRole, DeadBody>
 
     public override DeadBody? GetTarget()
     {
-        return PlayerControl.LocalPlayer?.GetNearestDeadBody(PlayerControl.LocalPlayer.MaxReportDistance / 4f);
+        return PlayerControl.LocalPlayer?.GetNearestDeadBody(ReportRangePatch.VanillaDistance / 4f);
     }
 
     public override bool IsTargetValid(DeadBody? target)

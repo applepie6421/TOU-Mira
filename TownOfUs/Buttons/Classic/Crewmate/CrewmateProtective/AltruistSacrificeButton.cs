@@ -8,6 +8,7 @@ using TownOfUs.Modifiers.Game.Alliance;
 using TownOfUs.Modules;
 using TownOfUs.Options.Modifiers.Alliance;
 using TownOfUs.Options.Roles.Crewmate;
+using TownOfUs.Patches.Options;
 using TownOfUs.Roles.Crewmate;
 using UnityEngine;
 
@@ -29,7 +30,7 @@ public sealed class AltruistSacrificeButton : TownOfUsRoleButton<AltruistRole, D
 
     public override DeadBody? GetTarget()
     {
-        return PlayerControl.LocalPlayer?.GetNearestDeadBody(PlayerControl.LocalPlayer.MaxReportDistance / 4f);
+        return PlayerControl.LocalPlayer?.GetNearestDeadBody(ReportRangePatch.VanillaDistance / 4f);
     }
 
     public bool RevivedInRound { get; set; }

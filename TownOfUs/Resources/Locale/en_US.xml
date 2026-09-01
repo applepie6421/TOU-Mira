@@ -2845,6 +2845,11 @@ when the lights are sabotaged.</string>
       <string name="TouOptionSkipButtonDisableEnumEmergency">Emergency</string>
       <string name="TouOptionSkipButtonDisableEnumAlways">Always</string>
 
+      <string name="TouOptionReportRange">Report Range</string>
+      <string name="TouOptionReportRangeEnumShort">Short</string>
+      <string name="TouOptionReportRangeEnumMedium">Medium</string>
+      <string name="TouOptionReportRangeEnumLong">Long</string>
+
       <string name="TouOptionHideVentAnimationNotInVision">Hide Vent Animations Not In Vision</string>
 
       <string name="TouOptionShowPetsMode">Pet Visibility</string>

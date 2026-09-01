@@ -29,6 +29,15 @@ public sealed class VanillaTweakOptions : AbstractOptionGroup
                 "TouOptionSkipButtonDisableEnumAlways"
             ]);
 
+    public ModdedEnumOption ReportRange { get; set; } =
+        new("TouOptionReportRange", (int)ReportReach.Long,
+            typeof(ReportReach),
+            [
+                "TouOptionReportRangeEnumShort",
+                "TouOptionReportRangeEnumMedium",
+                "TouOptionReportRangeEnumLong"
+            ]);
+
     public ModdedToggleOption HideVentAnimationNotInVision { get; set; } =
         new("TouOptionHideVentAnimationNotInVision", true);
 
@@ -69,6 +78,13 @@ public enum SkipState
     No,
     Emergency,
     Always
+}
+
+public enum ReportReach
+{
+    Short,
+    Medium,
+    Long
 }
 
 public enum PetVisiblity
