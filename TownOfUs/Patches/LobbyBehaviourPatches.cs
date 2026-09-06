@@ -6,6 +6,7 @@ using TownOfUs.Modules;
 using TownOfUs.Modules.Components;
 using TownOfUs.Modules.DraftMode;
 using TownOfUs.Networking;
+using TownOfUs.Patches.Misc;
 using TownOfUs.Patches.Options;
 using TownOfUs.Roles;
 using TownOfUs.Roles.Crewmate;
@@ -24,6 +25,7 @@ public static class LobbyBehaviourPatches
         CustomTouMurderRpcs.StoredKillAnimations = [];
         HaunterRole.ResetReveals();
         GameTimerPatch.ResetTimer();
+        VentHoverPatch.Clear();
         foreach (var role in GameHistory.AllRoles)
         {
             if (!role || role is not ITownOfUsRole touRole)
