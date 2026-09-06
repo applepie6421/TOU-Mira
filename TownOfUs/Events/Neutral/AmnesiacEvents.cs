@@ -80,7 +80,7 @@ public static class AmnesiacEvents
         {
             if (amne.AmOwner)
             {
-                amne.AddModifier<AmnesiacArrowModifier>(deadBody, Color.white);
+                amne.AddModifier<AmnesiacArrowModifier>(deadBody, TownOfUsColors.Amnesiac);
             }
         }
     }
