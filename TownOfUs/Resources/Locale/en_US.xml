@@ -1975,6 +1975,7 @@ distinguishing players under a mass hysteria</string>
   <string name="TownOfUsMira.Role.Miner.WikiDescription">The Miner is an Impostor Support role that can create vents.</string>
   <string name="TownOfUsMira.Role.MinerMine">Mine</string>
   <string name="TownOfUsMira.Role.MinerMine.WikiDescription">Place a vent where you are standing. These vents won't connect to already existing vents on the map but with each other.</string>
+  <string name="TownOfUsMira.Role.MinerNextRoundTabText">Vents activate after the next meeting</string>
   <!-- Miner Options -->
     <string name="TouOptionMinerNumberOfVentsPerGame">Number Of Miner Vents Per Game</string>
   <string name="TouOptionMinerMineCooldown">Mine Cooldown</string>

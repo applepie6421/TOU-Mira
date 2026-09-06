@@ -32,7 +32,9 @@ public static class MinerVentPatch
             return;
         }
 
-        if (PlayerControl.LocalPlayer.Data.Role is MinerRole)
+        var nextRound = OptionGroupSingleton<MinerOptions>.Instance.MineVisibility is MineVisiblityOptions.NextRound;
+
+        if (!nextRound && PlayerControl.LocalPlayer.Data.Role is MinerRole)
         {
             return;
         }
@@ -48,7 +50,7 @@ public static class MinerVentPatch
             var buttonBehavior = __instance.Buttons[i];
             var vent = nearbyVents[i];
 
-            if (vent != null && !vent.myRend.enabled)
+            if (vent != null && (!vent.myRend.enabled || MinerRole.DormantVents.Contains(vent.Id)))
             {
                 buttonBehavior.gameObject.SetActive(false);
             }

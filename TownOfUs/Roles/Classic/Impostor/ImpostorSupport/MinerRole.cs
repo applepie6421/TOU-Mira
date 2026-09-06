@@ -23,6 +23,9 @@ public sealed class MinerRole(IntPtr cppPtr)
 {
     [HideFromIl2Cpp] public List<Vent> Vents { get; set; } = [];
 
+    // Vents placed this round, not yet activated
+    [HideFromIl2Cpp] public static HashSet<int> DormantVents { get; set; } = [];
+
     public void FixedUpdate()
     {
         if (!Player || Player.Data.Role is not MinerRole || Player.HasDied() || !Player.AmOwner ||
@@ -69,6 +72,11 @@ public sealed class MinerRole(IntPtr cppPtr)
         if (OptionGroupSingleton<MinerOptions>.Instance.MineVisibility is MineVisiblityOptions.AfterUse)
         {
             stringB.Append(TownOfUsPlugin.Culture, $"Vents will only be visible once used");
+        }
+
+        if (OptionGroupSingleton<MinerOptions>.Instance.MineVisibility is MineVisiblityOptions.NextRound)
+        {
+            stringB.Append(TownOfUsPlugin.Culture, MiraLocaleManager.Get("TownOfUsMira.Role.MinerNextRoundTabText"));
         }
 
         return stringB;
@@ -127,7 +135,16 @@ public sealed class MinerRole(IntPtr cppPtr)
 
         Error($"RpcPlaceVent - vent: {vent.name} - {immediate}");
 
-        if (!player.AmOwner && !immediate)
+        var nextRound = OptionGroupSingleton<MinerOptions>.Instance.MineVisibility is MineVisiblityOptions.NextRound;
+        var dormantVisible = PlayerControl.LocalPlayer.IsImpostorAligned() || PlayerControl.LocalPlayer.HasDied();
+
+        if (nextRound)
+        {
+            DormantVents.Add(ventId);
+            vent.myRend.color = new Color(0.6f, 0.6f, 0.6f, 0.5f);
+            vent.gameObject.SetActive(dormantVisible);
+        }
+        else if (!player.AmOwner && !immediate)
         {
             Error("RpcPlaceVent - Hide Vent");
             vent.gameObject.SetActive(false);
@@ -160,7 +177,7 @@ public sealed class MinerRole(IntPtr cppPtr)
         ShipStatus.Instance.AllVents = allVents.ToArray();
 
         miner.Vents.Add(vent);
-        if (player.AmOwner || immediate)
+        if (player.AmOwner || immediate || (nextRound && dormantVisible))
         {
             Coroutines.Start(miner.CoExplode(new Vector3(position.x, position.y + 1.33f , zAxis - 0.0001f)));
         }

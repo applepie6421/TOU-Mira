@@ -1,13 +1,50 @@
 ﻿using MiraAPI.Events;
+using MiraAPI.Events.Vanilla.Gameplay;
+using MiraAPI.Events.Vanilla.Meeting;
 using MiraAPI.Events.Vanilla.Usables;
 using MiraAPI.GameOptions;
+using MiraAPI.Utilities;
 using TownOfUs.Options.Roles.Impostor;
 using TownOfUs.Roles.Impostor;
+using UnityEngine;
 
 namespace TownOfUs.Events.Impostor;
 
 public static class MinerEvents
 {
+    [RegisterEvent]
+    public static void RoundStartEventHandler(RoundStartEvent @event)
+    {
+        if (@event.TriggeredByIntro)
+        {
+            MinerRole.DormantVents.Clear();
+        }
+    }
+
+    [RegisterEvent]
+    public static void EjectionEventHandler(EjectionEvent _)
+    {
+        if (OptionGroupSingleton<MinerOptions>.Instance.MineVisibility is not MineVisiblityOptions.NextRound)
+        {
+            return;
+        }
+
+        foreach (var ventId in MinerRole.DormantVents)
+        {
+            var vent = Helpers.GetVentById(ventId);
+
+            if (vent == null)
+            {
+                continue;
+            }
+
+            vent.gameObject.SetActive(true);
+            vent.myRend.color = Color.white;
+        }
+
+        MinerRole.DormantVents.Clear();
+    }
+
     [RegisterEvent]
     public static void PlayerCanUseEventHandler(PlayerCanUseEvent @event)
     {
@@ -25,6 +62,12 @@ public static class MinerEvents
 
         if (vent == null)
         {
+            return;
+        }
+
+        if (MinerRole.DormantVents.Contains(vent.Id))
+        {
+            @event.Cancel();
             return;
         }
 
