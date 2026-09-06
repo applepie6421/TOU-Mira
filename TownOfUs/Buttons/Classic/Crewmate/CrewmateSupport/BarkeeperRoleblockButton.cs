@@ -13,25 +13,15 @@ public sealed class BarkeeperRoleblockButton : TownOfUsRoleButton<BarkeeperRole,
     public override BaseKeybind Keybind => Keybinds.PrimaryAction;
     public override Color TextOutlineColor => TownOfUsColors.Barkeeper;
     public override float Cooldown => Math.Clamp(OptionGroupSingleton<BarkeeperOptions>.Instance.RoleblockCooldown.Value + MapCooldown, 5f, 120f);
-    public override float EffectDuration => SelectedDuration;
+    public override float EffectDuration => OptionGroupSingleton<BarkeeperOptions>.Instance.RoleblockDelayMax.Value;
+    public override bool IsEffectCancellable() => true;
 
-    public float SelectedDuration = 0.001f;
     public override LoadableAsset<Sprite> Sprite => TouCrewAssets.RoleblockSprite;
     private PlayerControl? _roleblockedTarget;
 
     public override PlayerControl? GetTarget()
     {
         return PlayerControl.LocalPlayer.GetClosestLivingPlayer(true, Distance);
-    }
-
-    public override void ClickHandler()
-    {
-        if (CanClick())
-        {
-            var opts = OptionGroupSingleton<BarkeeperOptions>.Instance;
-            SelectedDuration = UnityEngine.Random.RandomRange(opts.RoleblockDelayMin.Value, opts.RoleblockDelayMax.Value);
-        }
-        base.ClickHandler();
     }
 
     public LobbyNotificationMessage? NotifMessage;

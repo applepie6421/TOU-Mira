@@ -13,9 +13,6 @@ public sealed class BootleggerOptions : AbstractRoleOptionGroup<BootleggerRole>,
     public ModdedNumberOption RoleblockCooldown { get; } =
         new("TouOptionBarkeeperRoleblockCooldown", 22.5f, 15f, 120f, 2.5f, MiraNumberSuffixes.Seconds);
 
-    public ModdedNumberOption RoleblockDelayMin { get; } =
-        new("TouOptionBarkeeperRoleblockDelayMin", 1.5f, 1f, 10f, 0.5f, MiraNumberSuffixes.Seconds);
-
     public ModdedNumberOption RoleblockDelayMax { get; } =
         new("TouOptionBarkeeperRoleblockDelayMax", 5f, 1f, 10f, 0.5f, MiraNumberSuffixes.Seconds);
 
@@ -31,7 +28,6 @@ public sealed class BootleggerOptions : AbstractRoleOptionGroup<BootleggerRole>,
     public IReadOnlySet<StringNames> WikiHiddenOptionKeys =>
         new HashSet<StringNames>
         {
-            RoleblockDelayMin.StringName,
             RoleblockDelayMax.StringName,
         };
 
@@ -39,7 +35,7 @@ public sealed class BootleggerOptions : AbstractRoleOptionGroup<BootleggerRole>,
     {
         string[] array =
         [
-            MiraLocaleManager.Get("TouOptionBarkeeperRoleblockDelaySummarized").Replace("<min>", RoleblockDelayMin.Value.ToString(TownOfUsPlugin.Culture)).Replace("<max>", RoleblockDelayMax.Value.ToString(TownOfUsPlugin.Culture))
+            MiraLocaleManager.Get("TouOptionBarkeeperRoleblockDelaySummarized").Replace("<max>", RoleblockDelayMax.Value.ToString(TownOfUsPlugin.Culture))
         ];
         return array;
     }

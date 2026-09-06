@@ -41,6 +41,12 @@ public sealed class HerbalistAbilityHerbButton : TownOfUsRoleButton<HerbalistRol
 
     public override void ClickHandler()
     {
+        if (EffectActive && IsEffectCancellable())
+        {
+            ResetCooldownAndOrEffect();
+            return;
+        }
+
         if (CanClick())
         {
             if (CurrentHerbsLimited)
@@ -95,6 +101,7 @@ public sealed class HerbalistAbilityHerbButton : TownOfUsRoleButton<HerbalistRol
             return 0.0001f;
         }
     }
+    public override bool IsEffectCancellable() => true;
     public override LoadableAsset<Sprite> Sprite => HerbButtons[0];
     public HerbAbilities CurrentAbility = HerbAbilities.Kill;
 

@@ -231,6 +231,12 @@ public abstract class TownOfUsButton : CustomActionButton
 
     public override void ClickHandler()
     {
+        if (EffectActive && IsEffectCancellable())
+        {
+            ResetCooldownAndOrEffect();
+            return;
+        }
+
         if (!CanClick())
         {
             return;
@@ -472,6 +478,12 @@ public abstract class TownOfUsTargetButton<T> : CustomActionButton<T> where T : 
 
     public override void ClickHandler()
     {
+        if (EffectActive && IsEffectCancellable())
+        {
+            ResetCooldownAndOrEffect();
+            return;
+        }
+
         if (CanClick())
         {
             if (LimitedUses)

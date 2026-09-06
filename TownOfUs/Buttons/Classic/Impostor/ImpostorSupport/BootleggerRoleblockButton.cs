@@ -61,9 +61,9 @@ public sealed class BootleggerRoleblockButton : TownOfUsRoleButton<BootleggerRol
     public override BaseKeybind Keybind => Keybinds.SecondaryAction;
     public override Color TextOutlineColor => TownOfUsColors.Impostor;
     public override float Cooldown => Math.Clamp(OptionGroupSingleton<BootleggerOptions>.Instance.RoleblockCooldown.Value + MapCooldown, 5f, 120f);
-    public override float EffectDuration => SelectedDuration;
+    public override float EffectDuration => OptionGroupSingleton<BootleggerOptions>.Instance.RoleblockDelayMax.Value;
+    public override bool IsEffectCancellable() => true;
 
-    public float SelectedDuration = 0.001f;
     public override LoadableAsset<Sprite> Sprite => TouImpAssets.DrinkRoleblockSprite;
     private PlayerControl? _roleblockedTarget;
 
@@ -78,16 +78,6 @@ public sealed class BootleggerRoleblockButton : TownOfUsRoleButton<BootleggerRol
         }
 
         return target;
-    }
-
-    public override void ClickHandler()
-    {
-        if (CanClick())
-        {
-            var opts = OptionGroupSingleton<BootleggerOptions>.Instance;
-            SelectedDuration = UnityEngine.Random.RandomRange(opts.RoleblockDelayMin.Value, opts.RoleblockDelayMax.Value);
-        }
-        base.ClickHandler();
     }
 
     public LobbyNotificationMessage? NotifMessage;

@@ -13,9 +13,6 @@ public sealed class BarkeeperOptions : AbstractRoleOptionGroup<BarkeeperRole>, I
     public ModdedNumberOption RoleblockCooldown { get; } =
         new("TouOptionBarkeeperRoleblockCooldown", 22.5f, 15f, 120f, 2.5f, MiraNumberSuffixes.Seconds);
 
-    public ModdedNumberOption RoleblockDelayMin { get; } =
-        new("TouOptionBarkeeperRoleblockDelayMin", 3f, 1f, 10f, 0.5f, MiraNumberSuffixes.Seconds);
-
     public ModdedNumberOption RoleblockDelayMax { get; } =
         new("TouOptionBarkeeperRoleblockDelayMax", 5f, 1f, 10f, 0.5f, MiraNumberSuffixes.Seconds);
 
@@ -40,7 +37,6 @@ public sealed class BarkeeperOptions : AbstractRoleOptionGroup<BarkeeperRole>, I
     public IReadOnlySet<StringNames> WikiHiddenOptionKeys =>
         new HashSet<StringNames>
         {
-            RoleblockDelayMin.StringName,
             RoleblockDelayMax.StringName,
             SpillEffectDuration.StringName,
             SpillEffectBuffMultiplier.StringName,
@@ -52,8 +48,7 @@ public sealed class BarkeeperOptions : AbstractRoleOptionGroup<BarkeeperRole>, I
         string[] array =
         [
             MiraLocaleManager.Get("TouOptionBarkeeperRoleblockDelaySummarized")
-                .Replace("<min>", RoleblockDelayMin.Value.ToString(TownOfUsPlugin.Culture)).Replace("<max>",
-                    RoleblockDelayMax.Value.ToString(TownOfUsPlugin.Culture)),
+                .Replace("<max>", RoleblockDelayMax.Value.ToString(TownOfUsPlugin.Culture)),
             MiraLocaleManager.Get("TouOptionBarkeeperSpillDurationOptionsSummarized")
                 .Replace("<duration>", SpillEffectDuration.Value.ToString(TownOfUsPlugin.Culture)).Replace("<fast>",
                     SpillEffectBuffMultiplier.Value.ToString(TownOfUsPlugin.Culture)).Replace("<slow>",

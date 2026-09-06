@@ -26,6 +26,13 @@ public sealed class SentryPlaceCameraButton : TownOfUsRoleButton<SentryRole>, IA
                 : 3.001f;
         }
     }
+
+    public override bool IsEffectCancellable()
+    {
+        var options = OptionGroupSingleton<SentryOptions>.Instance;
+        return options.DeployedCamerasVisibility is SentryDeployedCamerasVisibility.Immediately || options.CanMoveWhilePlacingCameras.Value;
+    }
+
     public override int MaxUses => (int)OptionGroupSingleton<SentryOptions>.Instance.InitialCameras.Value;
     public override LoadableAsset<Sprite> Sprite => LegacyAssets.IsLegacy ? LegacyCrewAssets.DeployCamSprite : TouCrewAssets.DeployCamSprite;
     public override bool ZeroIsInfinite { get; set; } = true;
@@ -80,6 +87,12 @@ public sealed class SentryPlaceCameraButton : TownOfUsRoleButton<SentryRole>, IA
 
     public override void ClickHandler()
     {
+        if (EffectActive && IsEffectCancellable())
+        {
+            ResetCooldownAndOrEffect();
+            return;
+        }
+
         var options = OptionGroupSingleton<SentryOptions>.Instance;
         if (!CanClick())
         {

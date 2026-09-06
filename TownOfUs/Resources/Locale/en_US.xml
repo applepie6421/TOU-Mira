@@ -952,9 +952,8 @@ They might be the killer or a witness.</string>
   <string name="TownOfUsMira.Role.BarkeeperSpillSpeedDebuffNotif">You feel an old spill beneath you. You feel slower than usual.</string>
   <!-- Barkeeper Options -->
     <string name="TouOptionBarkeeperRoleblockCooldown">Roleblock Cooldown</string>
-  <string name="TouOptionBarkeeperRoleblockDelayMin">Minimum Roleblock Delay</string>
   <string name="TouOptionBarkeeperRoleblockDelayMax">Maximum Roleblock Delay</string>
-  <string name="TouOptionBarkeeperRoleblockDelaySummarized">Roleblock Delay: [min]s - [max]s</string>
+  <string name="TouOptionBarkeeperRoleblockDelaySummarized">Roleblock Delay: up to [max]s</string>
   <string name="TouOptionBarkeeperSpillDelay">Spill Settle Delay</string>
   <string name="TouOptionBarkeeperSpillEffectDuration">Amount of Time Player is Affected By Spill</string>
   <string name="TouOptionBarkeeperSpillBuffDuration">Time Before Spill Slows Players Down</string>
